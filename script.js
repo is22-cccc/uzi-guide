@@ -5,7 +5,7 @@ let currentSession = {
     startTime: null,
     protocol: null,
     visMode: null,
-    isContinuation: false, // Новый флаг для отслеживания продолжения сессии
+    isContinuation: false, // Флаг для отслеживания продолжения сессии
     measurements: {},
     tacticEvaluation: null,
     finalDecision: null
@@ -39,7 +39,7 @@ function setupChoiceButtons(groupId, callback) {
     });
 }
 
-// --- Новая логика сессий ---
+// --- Логика сессий ---
 
 function startNewSession() {
     currentSession.isContinuation = false;
@@ -69,55 +69,58 @@ function continueSession(sessionId) {
     showScreen('protocol-screen');
 }
 
+// ИСПРАВЛЕННАЯ ЛОГИКА ПЕРЕХОДОВ
 function selectProtocol(protocolName) {
     currentSession.protocol = protocolName;
-    setTimeout(() => showScreen('vis-mode-screen'), 300);
+    showScreen('vis-mode-screen'); // Убрана задержка
 }
 
 function selectVisMode(mode) {
     currentSession.visMode = (mode === 'true');
-    setTimeout(() => {
-        applySessionSettings();
-        showScreen('main-workspace');
-    }, 300);
+    applySessionSettings();
+    showScreen('main-workspace'); // Убрана задержка
 }
 
+
 function applySessionSettings() {
-    // Показываем/скрываем модули
+    // 1. Показываем/скрываем модули в зависимости от протокола
     document.querySelectorAll('.module').forEach(module => {
+        // Исключаем блок follow-up из этой логики
+        if (module.id === 'follow-up-evaluation') return;
         const protocols = module.dataset.protocol.split(',');
         module.classList.toggle('hidden', !protocols.includes(currentSession.protocol));
     });
 
-    // Показываем/скрываем элементы визуализации
+    // 2. Показываем/скрываем элементы визуализации
     document.querySelectorAll('.visualization-element').forEach(el => {
         el.classList.toggle('hidden', !currentSession.visMode);
     });
 
-    // Показываем/скрываем блок оценки тактики
+    // 3. Показываем/скрываем блок оценки тактики
     const followUpBlock = document.getElementById('follow-up-evaluation');
     followUpBlock.classList.toggle('hidden', !currentSession.isContinuation);
     
-    // Загружаем предыдущие данные, если это продолжение сессии
+    // 4. Загружаем предыдущие данные, если это продолжение сессии
     if (currentSession.isContinuation) {
         loadPreviousMeasurements(currentSession.patientId);
     }
 
+    // 5. Генерируем меню
     generateProtocolMenu();
     
+    // 6. Отображаем инфо о сессии
     const protocolText = { 'basic': 'Базовый', 'advanced': 'Продвинутый', 'expert': 'Экспертный' };
     document.getElementById('session-info').innerText = `Сессия: ${currentSession.patientId.substring(4, 10)} | Протокол: ${protocolText[currentSession.protocol]}`;
 }
 
-// --- НОВАЯ ФУНКЦИЯ: Загрузка предыдущих измерений ---
+// --- Загрузка предыдущих измерений ---
 function loadPreviousMeasurements(patientId) {
     const allPatientData = JSON.parse(localStorage.getItem(`data_${patientId}`)) || [];
     if (allPatientData.length === 0) return;
 
-    // Находим последнее измерение каждого типа
     const lastMeasurements = {};
     allPatientData.filter(d => d.dataType === 'measurement').forEach(m => {
-        lastMeasurements[m.measurement] = m; // Перезаписываем, в итоге останется последнее
+        lastMeasurements[m.measurement] = m.data; // Сохраняем именно объект data
     });
     
     // Отображаем предыдущие значения
@@ -129,13 +132,15 @@ function loadPreviousMeasurements(patientId) {
         document.getElementById('prev-vmax').textContent = `(пред. ${lastMeasurements['Vpk_ОСА'].vmax})`;
         document.getElementById('prev-vmin').textContent = `(пред. ${lastMeasurements['Vpk_ОСА'].vmin})`;
     }
-    // и так далее для других модулей
+    if (lastMeasurements['FTc_ОСА']) {
+        document.getElementById('prev-flowTime').textContent = `(пред. ${lastMeasurements['FTc_ОСА'].flowTime})`;
+        document.getElementById('prev-heartRate').textContent = `(пред. ${lastMeasurements['FTc_ОСА'].heartRate})`;
+    }
 }
 
 
-// --- Функции-калькуляторы (без изменений) ---
-// ... calculateIJV, calculateCCA_Vpk, calculateCCA_FTc ...
-function calculateIJV(){/*...код без изменений...*/
+// --- Функции-калькуляторы ---
+function calculateIJV(){
     const hmax = document.getElementById('hmax').value;
     const hmin = document.getElementById('hmin').value;
     const tech = document.getElementById('ijv-tech').value;
@@ -150,7 +155,7 @@ function calculateIJV(){/*...код без изменений...*/
     interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
     saveMeasurement('ВЯВ', { hmax, hmin, tech, value: variability.toFixed(1), isResponsive: responsive });
 }
-function calculateCCA_Vpk(){/*...код без изменений...*/
+function calculateCCA_Vpk(){
     const vmax = document.getElementById('vmax').value;
     const vmin = document.getElementById('vmin').value;
     const tech = document.getElementById('vpk-tech').value;
@@ -165,7 +170,7 @@ function calculateCCA_Vpk(){/*...код без изменений...*/
     interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
     saveMeasurement('Vpk_ОСА', { vmax, vmin, tech, value: variability.toFixed(1), isResponsive: responsive });
 }
-function calculateCCA_FTc(){/*...код без изменений...*/
+function calculateCCA_FTc(){
     const flowTime = document.getElementById('flowTime').value;
     const heartRate = document.getElementById('heartRate').value;
     const age = document.getElementById('cca-age').value;
@@ -183,7 +188,7 @@ function calculateCCA_FTc(){/*...код без изменений...*/
 }
 
 
-// --- Итоговые функции и сбор данных (обновлены) ---
+// --- Итоговые функции и сбор данных ---
 
 function generateFinalReport() {
     let responsiveCount = 0;
@@ -212,7 +217,9 @@ function generateFinalReport() {
     }
     if (techIssues) {
         reportText += ' ВНИМАНИЕ: зафиксированы технические сложности, что может влиять на достоверность.';
-        finalBox.classList.add('non-responsive');
+        if(!finalBox.classList.contains('responsive')) {
+             finalBox.classList.add('non-responsive');
+        }
     }
     finalBox.innerText = reportText;
     document.getElementById('final-result-section').classList.remove('hidden');
@@ -223,7 +230,6 @@ async function finishSession() {
     if (!decision) { alert('Пожалуйста, выберите ваше клиническое действие.'); return; }
     currentSession.finalDecision = decision;
     
-    // Сохраняем оценку тактики, если она была
     if (currentSession.isContinuation) {
         currentSession.tacticEvaluation = document.getElementById('tactic-evaluation').value;
     }
@@ -240,14 +246,13 @@ async function finishSession() {
         protocol: currentSession.protocol,
         visMode: currentSession.visMode,
         finalDecision: currentSession.finalDecision,
-        tacticEvaluation: currentSession.tacticEvaluation // Отправляем новое поле
+        tacticEvaluation: currentSession.tacticEvaluation
     });
 
     alert('Сессия завершена. Данные отправлены.');
     window.location.reload();
 }
 
-// НОВАЯ ЛОГИКА СОХРАНЕНИЯ ДАННЫХ
 function saveMeasurement(measurementName, data) {
     currentSession.measurements[measurementName] = data;
 
@@ -256,12 +261,8 @@ function saveMeasurement(measurementName, data) {
         timestamp: new Date().toISOString(),
         researcherId: currentSession.researcherId,
         patientId: currentSession.patientId,
-        protocol: currentSession.protocol,
         measurement: measurementName,
-        isResponsive: data.isResponsive,
-        techIssue: data.tech,
-        //... добавляем все сырые данные
-        ...data 
+        data: data 
     };
     
     // Сохраняем в localStorage для динамического наблюдения
@@ -273,7 +274,6 @@ function saveMeasurement(measurementName, data) {
 }
 
 async function sendDataToGoogleSheet(data) {
-    // Эта функция остается без изменений
     console.log("Отправка данных:", data);
     try {
         const response = await fetch('/.netlify/functions/save-data', {
@@ -289,17 +289,19 @@ async function sendDataToGoogleSheet(data) {
 }
 
 
-// --- Инициализация при загрузке страницы (обновлена) ---
+// --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
-    // ... (код инициализации без изменений) ...
     setupChoiceButtons('protocol-choice', selectProtocol);
     setupChoiceButtons('vis-mode-choice', selectVisMode);
+    
     let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
     const oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
     sessions = sessions.filter(s => new Date(s.time).getTime() > oneDayAgo);
     localStorage.setItem('activeSessions', JSON.stringify(sessions));
+    
     const container = document.getElementById('active-sessions-container');
     const list = document.getElementById('active-sessions-list');
+    
     if (sessions.length > 0) {
         sessions.forEach(s => {
             const li = document.createElement('li');
@@ -315,16 +317,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupSidebarScroll() {
-    // ... (код скролла без изменений) ...
     const sidebarLinks = document.querySelectorAll('.sidebar a');
     const modules = document.querySelectorAll('.module:not(.hidden)');
     if(modules.length === 0) return;
+
     sidebarLinks.forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
         });
     });
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -339,4 +342,3 @@ function setupSidebarScroll() {
     }, { rootMargin: '-40% 0px -60% 0px' });
     modules.forEach(module => observer.observe(module));
 }
-
