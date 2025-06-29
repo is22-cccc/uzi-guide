@@ -1,59 +1,29 @@
 // Этот код должен находиться в файле: /netlify/functions/save-data.js
-
-// Импортируем необходимые библиотеки
-const { GoogleSpreadsheet } = require('google-spreadsheet');
+// ВЕРСИЯ ДЛЯ ДИАГНОСТИКИ
 
 exports.handler = async (event, context) => {
-  try {
-    // 1. Проверяем, что запрос содержит данные
-    if (!event.body) {
-      return { statusCode: 400, body: 'Missing request body' };
-    }
-    const data = JSON.parse(event.body);
+  // 1. Сразу же логируем, что функция была вызвана.
+  // Это первое, что мы должны увидеть в логах на Netlify.
+  console.log("Function 'save-data' was invoked.");
 
-    // 2. Инициализируем документ Google Таблиц
-    // Переменные окружения должны быть установлены в настройках сайта на Netlify
-    const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
-
-    // 3. Авторизуемся с помощью сервисного аккаунта
-    await doc.useServiceAccountAuth({
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      // ВАЖНО: Netlify неправильно обрабатывает переносы строк в private_key,
-      // поэтому мы заменяем их на реальные переносы строк
-      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    });
-
-    // 4. Загружаем информацию о документе и выбираем первый лист
-    await doc.loadInfo();
-    const sheet = doc.sheetsByIndex[0];
-
-    // 5. Добавляем новую строку с данными
-    await sheet.addRow({
-      timestamp: data.timestamp || new Date().toISOString(),
-      dataType: data.dataType || 'N/A',
-      researcherId: data.researcherId || 'N/A',
-      patientId: data.patientId || 'N/A',
-      protocol: data.protocol || 'N/A',
-      visMode: data.visMode !== undefined ? data.visMode.toString() : 'N/A',
-      measurement: data.measurement || 'N/A',
-      value: data.value !== undefined ? data.value.toString() : 'N/A',
-      isResponsive: data.isResponsive !== undefined ? data.isResponsive.toString() : 'N/A',
-      techIssue: data.techIssue || 'N/A',
-      finalDecision: data.finalDecision || 'N/A',
-    });
-
-    // 6. Отправляем успешный ответ
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Data saved successfully" }),
-    };
-
-  } catch (error) {
-    // В случае ошибки, логируем ее и отправляем ответ с ошибкой
-    console.error('Error:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to save data' }),
-    };
+  // 2. Проверяем, что в запросе есть тело.
+  if (!event.body) {
+    console.log("Request body is missing.");
+    return { statusCode: 400, body: 'Missing request body' };
   }
+  
+  // 3. Логируем полученные данные.
+  try {
+    const data = JSON.parse(event.body);
+    console.log("Received data:", data);
+  } catch (error) {
+    console.error("Error parsing request body:", error);
+    return { statusCode: 400, body: 'Error parsing JSON' };
+  }
+
+  // 4. Немедленно отправляем успешный ответ, НЕ ПЫТАЯСЬ подключиться к Google.
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: "Data received by diagnostic function successfully!" }),
+  };
 };
