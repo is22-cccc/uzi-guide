@@ -10,13 +10,13 @@
     <!-- ЭКРАН 1: СТАРТОВЫЙ -->
     <div id="start-screen" class="screen active">
         <div class="screen-content">
-            <img src="https://i.imgur.com/your-logo-placeholder.png" alt="Логотип ММКЦ" class="logo-placeholder">
             <h1>УЗИ-мониторинг волемического статуса</h1>
+            <p>Добро пожаловать в интерактивное руководство.</p>
             <button class="action-button" onclick="startNewSession()">Начать новое обследование</button>
             <div id="active-sessions-container">
                 <h3>Активные сессии:</h3>
                 <ul id="active-sessions-list">
-                    <!-- Список сессий будет здесь -->
+                    <!-- Список сессий будет генерироваться JS -->
                 </ul>
             </div>
         </div>
@@ -26,9 +26,11 @@
     <div id="protocol-screen" class="screen">
         <div class="screen-content">
             <h2>Шаг 1: Выберите уровень протокола</h2>
-            <button class="choice-button" onclick="selectProtocol('basic')">Базовый</button>
-            <button class="choice-button" onclick="selectProtocol('advanced')">Продвинутый</button>
-            <button class="choice-button" onclick="selectProtocol('expert')">Экспертный</button>
+            <div class="choice-group" id="protocol-choice">
+                <button class="choice-button" data-value="basic">Базовый</button>
+                <button class="choice-button" data-value="advanced">Продвинутый</button>
+                <button class="choice-button" data-value="expert">Экспертный</button>
+            </div>
         </div>
     </div>
 
@@ -36,8 +38,10 @@
     <div id="vis-mode-screen" class="screen">
         <div class="screen-content">
             <h2>Шаг 2: Выберите режим отображения</h2>
-            <button class="choice-button" onclick="selectVisMode(true)">С визуализацией (для обучения)</button>
-            <button class="choice-button" onclick="selectVisMode(false)">Без визуализации (для экспертов)</button>
+            <div class="choice-group" id="vis-mode-choice">
+                <button class="choice-button" data-value="true">С визуализацией (обучение)</button>
+                <button class="choice-button" data-value="false">Без визуализации (эксперт)</button>
+            </div>
         </div>
     </div>
     
@@ -63,7 +67,7 @@
                             <div class="visualization-element">
                                 <h4>Инструкции и визуализация</h4>
                                 <p>Уложите пациента горизонтально, поверните голову. Поставьте датчик на переднелатеральную поверхность шеи. Не давите.</p>
-                                <img src="https://i.imgur.com/xG4hPAb.png" alt="Схема позиционирования датчика на шее">
+                                <img src="https://i.imgur.com/xG4hPAb.png" alt="[Изображение схемы позиционирования датчика на шее]">
                             </div>
                             <div class="calculator">
                                 <label for="hmax">Макс. диаметр (Hmax), мм:</label>
@@ -92,54 +96,58 @@
                     <h2>Оценка общей сонной артерии (ОСА)</h2>
                     <div class="sub-module">
                         <h3>Вариабельность пиковой скорости (Vpk)</h3>
-                        <div class="instructions">
-                            <div class="calculator">
-                                <label for="vmax">Vmax, см/с:</label>
-                                <input type="number" id="vmax" placeholder="100">
-                                <label for="vmin">Vmin, см/с:</label>
-                                <input type="number" id="vmin" placeholder="85">
-                                <label for="vpk-tech">Технические сложности:</label>
-                                <select id="vpk-tech">
-                                    <option value="" selected disabled>Выберите...</option>
-                                    <option value="нет">Нет</option>
-                                    <option value="да">Да</option>
-                                </select>
-                                <button onclick="calculateCCA_Vpk()">Рассчитать Vpk</button>
+                        <div class="step-content no-grid">
+                            <div class="instructions">
+                                <div class="calculator">
+                                    <label for="vmax">Vmax, см/с:</label>
+                                    <input type="number" id="vmax" placeholder="100">
+                                    <label for="vmin">Vmin, см/с:</label>
+                                    <input type="number" id="vmin" placeholder="85">
+                                    <label for="vpk-tech">Технические сложности:</label>
+                                    <select id="vpk-tech">
+                                        <option value="" selected disabled>Выберите...</option>
+                                        <option value="нет">Нет</option>
+                                        <option value="да">Да</option>
+                                    </select>
+                                    <button onclick="calculateCCA_Vpk()">Рассчитать Vpk</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="visualization result">
-                            <h4>Результат Vpk</h4>
-                            <p id="vpk-result-text">...</p>
-                            <div id="vpk-interpretation" class="interpretation-box"></div>
+                            <div class="visualization result">
+                                <h4>Результат Vpk</h4>
+                                <p id="vpk-result-text">...</p>
+                                <div id="vpk-interpretation" class="interpretation-box"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="sub-module">
                         <h3>Корректированное время потока (FTc)</h3>
-                        <div class="instructions">
-                            <div class="calculator">
-                                <label for="flowTime">Время потока (мс):</label>
-                                <input type="number" id="flowTime" placeholder="310">
-                                <label for="heartRate">ЧСС (уд/мин):</label>
-                                <input type="number" id="heartRate" placeholder="80">
-                                <label for="cca-age">Возраст пациента:</label>
-                                <select id="cca-age">
-                                    <option value="" selected disabled>Выберите...</option>
-                                    <option value="<65">До 65 лет</option>
-                                    <option value=">=65">65 лет и более</option>
-                                </select>
-                                <label for="ftc-tech">Технические сложности:</label>
-                                <select id="ftc-tech">
-                                    <option value="" selected disabled>Выберите...</option>
-                                    <option value="нет">Нет</option>
-                                    <option value="да">Да</option>
-                                </select>
-                                <button onclick="calculateCCA_FTc()">Рассчитать FTc</button>
+                         <div class="step-content no-grid">
+                            <div class="instructions">
+                                <div class="calculator">
+                                    <label for="flowTime">Время потока (мс):</label>
+                                    <input type="number" id="flowTime" placeholder="310">
+                                    <label for="heartRate">ЧСС (уд/мин):</label>
+                                    <input type="number" id="heartRate" placeholder="80">
+                                    <label for="cca-age">Возраст пациента:</label>
+                                    <select id="cca-age">
+                                        <option value="" selected disabled>Выберите...</option>
+                                        <option value="<65">До 65 лет</option>
+                                        <option value=">=65">65 лет и более</option>
+                                    </select>
+                                    <label for="ftc-tech">Технические сложности:</label>
+                                    <select id="ftc-tech">
+                                        <option value="" selected disabled>Выберите...</option>
+                                        <option value="нет">Нет</option>
+                                        <option value="да">Да</option>
+                                    </select>
+                                    <button onclick="calculateCCA_FTc()">Рассчитать FTc</button>
+                                </div>
                             </div>
-                        </div>
-                         <div class="visualization result">
-                            <h4>Результат FTc</h4>
-                            <p id="ftc-result-text">...</p>
-                            <div id="ftc-interpretation" class="interpretation-box"></div>
+                            <div class="visualization result">
+                                <h4>Результат FTc</h4>
+                                <p id="ftc-result-text">...</p>
+                                <div id="ftc-interpretation" class="interpretation-box"></div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -150,33 +158,31 @@
                     <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
 
-                <!-- ... ДРУГИЕ МОДУЛИ-ЗАГОТОВКИ ... -->
-                <section id="pa-vti-module" class="module" data-protocol="expert">
-                     <h2>Оценка VTI на легочной артерии</h2>
-                     <p class="placeholder-text">Модуль в разработке.</p>
-                </section>
-                 
-                <section id="svc-module" class="module" data-protocol="expert">
-                     <h2>Оценка верхней полой вены</h2>
-                     <p class="placeholder-text">Модуль в разработке.</p>
-                </section>
-                
-                 <section id="aorta-vti-module" class="module" data-protocol="expert">
-                     <h2>Оценка VTI на аорте</h2>
-                     <p class="placeholder-text">Модуль в разработке.</p>
-                </section>
-                
-                 <section id="ivc-subcostal-module" class="module" data-protocol="advanced,expert">
-                     <h2>Оценка нижней полой вены (субкост.)</h2>
+                <section id="ivc-subcostal-module" class="module" data-protocol="advanced,expert">
+                     <h2>Нижняя полая вена (субкостально)</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
                 
                 <section id="ivc-transhepatic-module" class="module" data-protocol="advanced,expert">
-                     <h2>Оценка нижней полой вены (транспеч.)</h2>
+                     <h2>Нижняя полая вена (транспеченочно)</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                
+                <section id="pa-vti-module" class="module" data-protocol="expert">
+                     <h2>VTI на легочной артерии</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                 
+                <section id="svc-module" class="module" data-protocol="expert">
+                     <h2>Верхняя полая вена</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                
+                 <section id="aorta-vti-module" class="module" data-protocol="expert">
+                     <h2>VTI на аорте</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
 
-                <!-- ИТОГОВЫЙ БЛОК -->
                 <div class="final-actions">
                     <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
                     <div id="final-result-section" class="hidden">
