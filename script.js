@@ -1,4 +1,4 @@
-// --- Глобальное состояние ---
+// --- Глобальное состояние сессии ---
 let currentSession = {
     patientId: null,
     researcherId: null,
@@ -9,17 +9,25 @@ let currentSession = {
     finalDecision: null
 };
 
-// --- Функции управления UI ---
+// --- Функции управления UI и навигацией ---
 
 function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 }
 
+function setupChoiceButtons(groupId, callback) {
+    const group = document.getElementById(groupId);
+    group.addEventListener('click', (e) => {
+        if (e.target.classList.contains('choice-button')) {
+            group.querySelectorAll('.choice-button').forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+            callback(e.target.dataset.value);
+        }
+    });
+}
+
 function startNewSession() {
-    // Генерация ID
     const researcherId = localStorage.getItem('researcherId') || `res-${crypto.randomUUID()}`;
     localStorage.setItem('researcherId', researcherId);
     
@@ -27,7 +35,6 @@ function startNewSession() {
     currentSession.patientId = `pat-${crypto.randomUUID()}`;
     currentSession.startTime = new Date().toISOString();
     
-    // Сохранение сессии
     let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
     sessions.push({id: currentSession.patientId, time: currentSession.startTime});
     localStorage.setItem('activeSessions', JSON.stringify(sessions));
@@ -36,40 +43,46 @@ function startNewSession() {
 }
 
 function continueSession(sessionId) {
-    // В будущем здесь будет логика загрузки сохраненных данных сессии
-    alert(`Продолжение сессии ${sessionId} в разработке.`);
-    // Для демонстрации начинаем новую сессию, но с id старой
-    const researcherId = localStorage.getItem('researcherId');
-    currentSession.researcherId = researcherId;
-    currentSession.patientId = sessionId;
-    showScreen('protocol-screen');
+    alert(`Продолжение сессии ${sessionId}. В данной версии все равно начнется новое обследование.`);
+    startNewSession(); // В будущем здесь будет логика загрузки сессии
 }
 
 function selectProtocol(protocolName) {
     currentSession.protocol = protocolName;
+    setTimeout(() => {
+        showScreen('vis-mode-screen');
+    }, 300); // Небольшая задержка для визуального эффекта
+}
+
+function selectVisMode(mode) {
+    currentSession.visMode = (mode === 'true'); // Конвертируем строку в boolean
+    setTimeout(() => {
+        applySessionSettings();
+        showScreen('main-workspace');
+    }, 300);
+}
+
+function applySessionSettings() {
+    // 1. Показываем/скрываем модули в зависимости от протокола
     document.querySelectorAll('.module').forEach(module => {
         const protocols = module.dataset.protocol.split(',');
-        if (protocols.includes(protocolName)) {
+        if (protocols.includes(currentSession.protocol)) {
             module.classList.remove('hidden');
         } else {
             module.classList.add('hidden');
         }
     });
-    generateProtocolMenu();
-    showScreen('vis-mode-screen');
-}
 
-function selectVisMode(mode) {
-    currentSession.visMode = mode;
+    // 2. Показываем/скрываем элементы визуализации
     document.querySelectorAll('.visualization-element').forEach(el => {
-        if (mode) {
-            el.classList.remove('hidden');
-        } else {
-            el.classList.add('hidden');
-        }
+        el.classList.toggle('hidden', !currentSession.visMode);
     });
+
+    // 3. Генерируем меню
+    generateProtocolMenu();
+    
+    // 4. Отображаем инфо о сессии
     document.getElementById('session-info').innerText = `Сессия: ${currentSession.patientId.substring(4, 10)} | Протокол: ${currentSession.protocol}`;
-    showScreen('main-workspace');
 }
 
 function generateProtocolMenu() {
@@ -83,9 +96,8 @@ function generateProtocolMenu() {
         li.appendChild(a);
         menu.appendChild(li);
     });
-    setupSidebar(); // Перенастраиваем сайдбар
+    setupSidebarScroll(); 
 }
-
 
 // --- Функции-калькуляторы ---
 
@@ -104,27 +116,38 @@ function calculateIJV() {
     resultText.innerText = `Вариабельность ВЯВ: ${variability.toFixed(1)}%`;
     
     const cutoff = 18;
-    let responsive = variability > cutoff;
+    const responsive = variability > cutoff;
+    
     interpretationBox.className = 'interpretation-box';
-    if(tech === 'да') {
-        interpretationBox.innerText = `[Тех. сложности] Результат может быть неточным.`;
-        interpretationBox.classList.add('neutral');
-        responsive = 'uncertain';
-    } else {
-        interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
-        interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
-    }
-
+    interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+    
     saveMeasurement('ijv', { hmax, hmin, tech, variability, responsive });
 }
 
+
 function calculateCCA_Vpk() {
-    // Аналогичная логика, как в calculateIJV
     const vmax = document.getElementById('vmax').value;
     const vmin = document.getElementById('vmin').value;
     const tech = document.getElementById('vpk-tech').value;
-    //...
-    saveMeasurement('cca_vpk', { vmax, vmin, tech, /* ... */ });
+    const resultText = document.getElementById('vpk-result-text');
+    const interpretationBox = document.getElementById('vpk-interpretation');
+
+    if (!vmax || !vmin || !tech) {
+         resultText.innerText = 'Заполните все поля.'; return;
+    }
+
+    const variability = ((parseFloat(vmax) - parseFloat(vmin)) / ((parseFloat(vmax) + parseFloat(vmin)) / 2)) * 100;
+    resultText.innerText = `Вариабельность Vpk: ${variability.toFixed(1)}%`;
+    
+    const cutoff = 12;
+    const responsive = variability > cutoff;
+
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+
+    saveMeasurement('cca_vpk', { vmax, vmin, tech, variability, responsive });
 }
 
 function calculateCCA_FTc() {
@@ -143,17 +166,11 @@ function calculateCCA_FTc() {
     resultText.innerText = `FTc: ${ftc.toFixed(0)} мс`;
 
     const cutoff = age === '<65' ? 325 : 340;
-    let responsive = ftc < cutoff;
-    interpretationBox.className = 'interpretation-box';
+    const responsive = ftc < cutoff;
 
-    if(tech === 'да'){
-        interpretationBox.innerText = `[Тех. сложности] Результат может быть неточным.`;
-        interpretationBox.classList.add('neutral');
-        responsive = 'uncertain';
-    } else {
-        interpretationBox.innerText = responsive ? `< ${cutoff} мс. Вероятен ответ на инфузию.` : `≥ ${cutoff} мс. Ответ на инфузию маловероятен.`;
-        interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
-    }
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = responsive ? `< ${cutoff} мс. Вероятен ответ на инфузию.` : `≥ ${cutoff} мс. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
 
     saveMeasurement('cca_ftc', { flowTime, heartRate, age, tech, ftc, responsive });
 }
@@ -163,30 +180,39 @@ function calculateCCA_FTc() {
 function generateFinalReport() {
     let responsiveCount = 0;
     let nonResponsiveCount = 0;
-    let uncertainCount = 0;
+    let techIssues = false;
 
     for (const key in currentSession.measurements) {
         const measurement = currentSession.measurements[key];
+        if (measurement.tech === 'да') techIssues = true;
         if (measurement.responsive === true) responsiveCount++;
         else if (measurement.responsive === false) nonResponsiveCount++;
-        else if (measurement.responsive === 'uncertain') uncertainCount++;
     }
 
     const finalBox = document.getElementById('final-interpretation');
     finalBox.className = 'interpretation-box';
-    if(uncertainCount > 0){
-         finalBox.innerText = `Заключение затруднено из-за технических сложностей при измерениях.`;
-         finalBox.classList.add('neutral');
+    let reportText = '';
+
+    if (responsiveCount === 0 && nonResponsiveCount === 0) {
+        reportText = 'Недостаточно данных для формирования заключения.';
+        finalBox.classList.add('neutral');
     } else if (responsiveCount > nonResponsiveCount) {
-        finalBox.innerText = `Совокупность данных указывает на вероятный положительный ответ на инфузионную терапию.`;
+        reportText = 'Совокупность данных указывает на ВЕРОЯТНЫЙ положительный ответ на инфузионную терапию.';
         finalBox.classList.add('responsive');
     } else if (nonResponsiveCount > responsiveCount) {
-        finalBox.innerText = `Совокупность данных указывает на низкую вероятность ответа на инфузионную терапию.`;
+        reportText = 'Совокупность данных указывает на НИЗКУЮ вероятность ответа на инфузионную терапию.';
         finalBox.classList.add('non-responsive');
     } else {
-        finalBox.innerText = `Данные противоречивы. Требуется дополнительная оценка или использование других методов.`;
+        reportText = 'Данные противоречивы. Требуется дополнительная оценка или использование других методов.';
         finalBox.classList.add('neutral');
     }
+
+    if (techIssues) {
+        reportText += ' ВНИМАНИЕ: при проведении измерений были зафиксированы технические сложности, что может влиять на достоверность заключения.';
+        finalBox.classList.add('non-responsive'); // Делаем его красным при тех.сложностях
+    }
+    
+    finalBox.innerText = reportText;
     document.getElementById('final-result-section').classList.remove('hidden');
 }
 
@@ -205,34 +231,53 @@ function finishSession(){
 function saveMeasurement(type, data) {
     currentSession.measurements[type] = data;
     sendDataToGoogleSheet({
-        type: 'measurement',
-        ...currentSession
+        type: `measurement_${type}`,
+        timestamp: new Date().toISOString(),
+        sessionId: currentSession.patientId,
+        data: data
     });
 }
 
 function sendDataToGoogleSheet(data) {
-    // --- ЗАГЛУШКА ДЛЯ ОТПРАВКИ ДАННЫХ ---
-    console.log("--- ДАННЫЕ ДЛЯ ОТПРАВКИ В GOOGLE ---");
+    console.log("--- ДАННЫЕ ДЛЯ ОТПРАВКИ ---");
     console.log(JSON.stringify(data, null, 2));
     // В будущем здесь будет fetch-запрос на серверный обработчик
 }
 
-
 // --- Инициализация при загрузке страницы ---
 
-function setupSidebar() {
-    // Эта функция должна быть перенастроена, так как меню теперь динамическое
+function setupSidebarScroll() {
     const sidebarLinks = document.querySelectorAll('.sidebar a');
+    const modules = document.querySelectorAll('.module');
+
     sidebarLinks.forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
         });
     });
-    // Логика подсветки активного пункта останется такой же, но ее нужно вызывать после генерации меню
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                sidebarLinks.forEach(link => {
+                    link.parentElement.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + entry.target.id) {
+                        link.parentElement.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, { rootMargin: '-40% 0px -60% 0px' });
+
+    modules.forEach(module => observer.observe(module));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Настройка кнопок выбора
+    setupChoiceButtons('protocol-choice', selectProtocol);
+    setupChoiceButtons('vis-mode-choice', selectVisMode);
+
     // Загрузка активных сессий
     const sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
     const list = document.getElementById('active-sessions-list');
