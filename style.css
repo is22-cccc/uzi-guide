@@ -1,0 +1,183 @@
+/* Базовые стили */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f4f7f9;
+    color: #333;
+}
+
+.main-header {
+    background-color: #01295f; /* Темно-синий, как у mmccdzm.ru */
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+}
+
+.content-container {
+    display: flex;
+    margin: 1.5rem;
+    gap: 1.5rem;
+}
+
+.sidebar {
+    flex: 0 0 250px;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    height: fit-content;
+}
+
+.sidebar h2 {
+    font-size: 1.2rem;
+    color: #01295f;
+    border-bottom: 2px solid #eef2f5;
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 0.7rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar li a:hover {
+    background-color: #eef2f5;
+}
+
+.sidebar li.active-protocol a {
+    background-color: #00a5e5; /* Ярко-голубой, как у mmccdzm.ru */
+    color: white;
+    font-weight: bold;
+}
+
+.module {
+    flex-grow: 1;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.module h2 {
+    margin-top: 0;
+    color: #01295f;
+}
+
+.step {
+    display: none; /* Скрываем все шаги по умолчанию */
+}
+
+.step.active {
+    display: block; /* Показываем только активный шаг */
+}
+
+.step-content {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid #eef2f5;
+    padding-top: 1.5rem;
+}
+
+.instructions {
+    flex-basis: 50%;
+}
+
+.visualization {
+    flex-basis: 50%;
+    text-align: center;
+}
+
+.visualization img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.caption {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 0.5rem;
+}
+
+.button-next {
+    display: inline-block;
+    background-color: #00a5e5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.button-next:hover {
+    background-color: #008ac7;
+}
+
+/* Стили для калькулятора */
+.calculator {
+    margin-top: 1rem;
+}
+
+.calculator label {
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.calculator input {
+    width: 100px;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.calculator button {
+    display: inline-block;
+    background-color: #00b899; /* Зеленый акцент, как у mmccdzm.ru */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 10px;
+}
+
+.result {
+    padding: 1rem;
+    background-color: #f4f7f9;
+    border-radius: 5px;
+}
+
+.interpretation-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.interpretation-box.responsive {
+    background-color: #e8f5e9; /* Light green */
+    color: #2e7d32;
+}
+
+.interpretation-box.non-responsive {
+    background-color: #fff3e0; /* Light orange */
+    color: #e65100;
+}
