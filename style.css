@@ -239,20 +239,21 @@ body {
 .sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
 .sub-module h3 { margin-top: 0; color: var(--accent-hover); grid-column: 1 / -1; }
 
-/* --- ИСПРАВЛЕНИЕ ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
+/* --- ИСПРАВЛЕННЫЙ БЛОК: МАКЕТ ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
 .module.no-vis .module-content {
     grid-template-columns: 1fr; /* Делаем одну колонку */
 }
+
 .module.no-vis .instructions-column {
     display: none; /* Полностью скрываем левую колонку с инструкциями */
 }
+
 .module.no-vis .calculator-column {
-    /* Для правой колонки, которая осталась, можно задать максимальную ширину для эстетики */
+    /* Для правой колонки, которая осталась, задаем максимальную ширину и центрируем */
     max-width: 450px;
-    margin: 0 auto; /* Центрируем ее */
+    margin: 0 auto;
     width: 100%;
 }
-
 .placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
 .final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
 .hidden { display: none !important; }
