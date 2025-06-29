@@ -16,7 +16,6 @@ function generateUUID() {
     if (crypto && crypto.randomUUID) {
         return crypto.randomUUID();
     }
-    // "Подстраховочный" метод для старых браузеров
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
         const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
@@ -30,79 +29,57 @@ function showScreen(screenId) {
 }
 
 // --- Логика сессий ---
-
 function startNewSession() {
     currentSession.isContinuation = false;
-    // Очищаем предыдущие значения на всякий случай
     document.querySelectorAll('.previous-value').forEach(span => span.textContent = '');
-
     const researcherId = localStorage.getItem('researcherId') || `res-${generateUUID()}`;
     localStorage.setItem('researcherId', researcherId);
-    
     currentSession.researcherId = researcherId;
     currentSession.patientId = `pat-${generateUUID()}`;
     currentSession.startTime = new Date().toISOString();
-    
     let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
     sessions.unshift({ id: currentSession.patientId, time: currentSession.startTime });
     sessions = sessions.slice(0, 5);
     localStorage.setItem('activeSessions', JSON.stringify(sessions));
-
     showScreen('protocol-screen');
 }
 
 function continueSession(sessionId) {
-    currentSession.isContinuation = true; // Устанавливаем флаг
+    currentSession.isContinuation = true;
     const researcherId = localStorage.getItem('researcherId');
     currentSession.researcherId = researcherId;
     currentSession.patientId = sessionId;
     currentSession.measurements = {};
     currentSession.finalDecision = null;
-    
     showScreen('protocol-screen');
 }
 
-// ФУНКЦИИ ВЫБОРА ПРОТОКОЛА И РЕЖИМА
 function selectProtocol(protocolName) {
-    console.log("Выбран протокол:", protocolName);
     currentSession.protocol = protocolName;
     showScreen('vis-mode-screen');
 }
 
 function selectVisMode(mode) {
-    console.log("Выбран режим:", mode);
     currentSession.visMode = (mode === 'true');
     applySessionSettings();
     showScreen('main-workspace');
 }
 
-
 function applySessionSettings() {
-    // 1. Показываем/скрываем модули в зависимости от протокола
     document.querySelectorAll('.module').forEach(module => {
         if (module.id === 'follow-up-evaluation') return;
         const protocols = module.dataset.protocol.split(',');
         module.classList.toggle('hidden', !protocols.includes(currentSession.protocol));
     });
-
-    // 2. Показываем/скрываем элементы визуализации
     document.querySelectorAll('.visualization-element').forEach(el => {
         el.classList.toggle('hidden', !currentSession.visMode);
     });
-
-    // 3. Показываем/скрываем блок оценки тактики
     const followUpBlock = document.getElementById('follow-up-evaluation');
     followUpBlock.classList.toggle('hidden', !currentSession.isContinuation);
-    
-    // 4. Загружаем предыдущие данные, если это продолжение сессии
     if (currentSession.isContinuation) {
         loadPreviousMeasurements(currentSession.patientId);
     }
-
-    // 5. Генерируем меню
     generateProtocolMenu();
-    
-    // 6. Отображаем инфо о сессии
     const protocolText = { 'basic': 'Базовый', 'advanced': 'Продвинутый', 'expert': 'Экспертный' };
     document.getElementById('session-info').innerText = `Сессия: ${currentSession.patientId.substring(4, 10)} | Протокол: ${protocolText[currentSession.protocol]}`;
 }
@@ -111,12 +88,10 @@ function applySessionSettings() {
 function loadPreviousMeasurements(patientId) {
     const allPatientData = JSON.parse(localStorage.getItem(`data_${patientId}`)) || [];
     if (allPatientData.length === 0) return;
-
     const lastMeasurements = {};
     allPatientData.filter(d => d.dataType === 'measurement').forEach(m => {
-        lastMeasurements[m.measurement] = m.data; 
+        lastMeasurements[m.measurement] = m.data;
     });
-    
     if (lastMeasurements['ВЯВ']) {
         document.getElementById('prev-hmax').textContent = `(пред. ${lastMeasurements['ВЯВ'].hmax})`;
         document.getElementById('prev-hmin').textContent = `(пред. ${lastMeasurements['ВЯВ'].hmin})`;
@@ -130,7 +105,6 @@ function loadPreviousMeasurements(patientId) {
         document.getElementById('prev-heartRate').textContent = `(пред. ${lastMeasurements['FTc_ОСА'].heartRate})`;
     }
 }
-
 
 // --- Функции-калькуляторы ---
 function calculateIJV(){
@@ -180,7 +154,6 @@ function calculateCCA_FTc(){
     saveMeasurement('FTc_ОСА', { flowTime, heartRate, age, tech, value: ftc.toFixed(0), isResponsive: responsive });
 }
 
-
 // --- Итоговые функции и сбор данных ---
 function generateFinalReport() {
     let responsiveCount = 0;
@@ -208,13 +181,17 @@ function generateFinalReport() {
         finalBox.classList.add('neutral');
     }
     if (techIssues) {
-        reportText += ' ВНИМАНИЕ: зафиксированы технические сложности, что может влиять на достоверность.';
+        reportText += ' ВНИМАНИЕ: зафиксированы технические сложности, что может влиять на достоверность заключения.';
         if(!finalBox.classList.contains('responsive')) {
              finalBox.classList.add('non-responsive');
         }
     }
     finalBox.innerText = reportText;
-    document.getElementById('final-result-section').classList.remove('hidden');
+    
+    // Показываем блок и скроллим к нему
+    const finalSection = document.getElementById('final-result-section');
+    finalSection.classList.remove('hidden');
+    finalSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function finishSession() {
@@ -253,11 +230,17 @@ function saveMeasurement(measurementName, data) {
         researcherId: currentSession.researcherId,
         patientId: currentSession.patientId,
         measurement: measurementName,
-        data: data 
+        value: data.value,
+        isResponsive: data.isResponsive,
+        techIssue: data.tech,
+        age: data.age || 'N/A' // Добавляем возраст, если он есть
     };
+    
     let allPatientData = JSON.parse(localStorage.getItem(`data_${currentSession.patientId}`)) || [];
-    allPatientData.push(dataToSend);
+    // Сохраняем не весь пакет, а только "сырые" данные измерения
+    allPatientData.push({dataType: 'measurement', measurement: measurementName, data: data });
     localStorage.setItem(`data_${currentSession.patientId}`, JSON.stringify(allPatientData));
+    
     sendDataToGoogleSheet(dataToSend);
 }
 
@@ -279,7 +262,7 @@ async function sendDataToGoogleSheet(data) {
 
 // --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
-    // ПРЯМАЯ И НАДЕЖНАЯ НАСТРОЙКА КНОПОК
+    // Настройка кнопок выбора
     const protocolButtons = document.querySelectorAll('#protocol-choice .choice-button');
     protocolButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -309,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (sessions.length > 0) {
         container.classList.remove('hidden');
-        list.innerHTML = ''; // Очищаем список перед заполнением
+        list.innerHTML = '';
         sessions.forEach(s => {
             const li = document.createElement('li');
             li.textContent = `Пациент ${s.id.substring(4,10)} (начато: ${new Date(s.time).toLocaleString()})`;
@@ -353,7 +336,6 @@ function generateProtocolMenu() {
     const menu = document.getElementById('protocol-menu');
     menu.innerHTML = '';
     document.querySelectorAll('.module:not(.hidden)').forEach(module => {
-        // Исключаем блок follow-up из меню
         if (module.id === 'follow-up-evaluation') return;
         const li = document.createElement('li');
         const a = document.createElement('a');
