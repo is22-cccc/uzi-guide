@@ -1,5 +1,3 @@
-2. Файл package.json (говорит Netlify, какие библиотеки нужны для бэкенда)
-
 {
   "name": "uzi-guide-functions",
   "version": "1.0.0",
