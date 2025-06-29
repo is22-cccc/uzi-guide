@@ -34,7 +34,6 @@ body {
 }
 .screen-content h1, .screen-content h2 { color: var(--primary-color); }
 
-/* --- СТИЛЬ ДЛЯ ЛОГО НА СТАРТОВОМ ЭКРАНЕ --- */
 .logo {
     max-width: 250px;
     margin-bottom: 1.5rem;
@@ -56,7 +55,6 @@ body {
 }
 .action-button:hover { background-color: var(--accent-hover); }
 
-/* --- Улучшенные кнопки выбора --- */
 .choice-group {
     display: flex;
     justify-content: center;
@@ -103,13 +101,11 @@ body {
 
 
 /* --- Стили для основного рабочего пространства --- */
-
-/* --- ИЗМЕНЕННЫЙ СТИЛЬ: Шапка теперь без логотипа, просто текст --- */
 .main-header {
     background-color: var(--primary-color);
     color: var(--text-light);
     padding: 1rem 2rem;
-    text-align: center; /* Центрируем текст, раз лого нет */
+    text-align: center;
 }
 .main-header h1 {
     font-size: 1.2rem;
@@ -125,7 +121,6 @@ body {
     align-items: flex-start;
 }
 
-/* --- Боковое меню --- */
 .sidebar {
     flex: 0 0 250px;
     background-color: var(--white);
@@ -158,7 +153,6 @@ body {
     font-weight: bold;
 }
 
-/* --- Модули --- */
 .modules-wrapper {
     flex-grow: 1;
     display: flex;
@@ -171,7 +165,7 @@ body {
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    scroll-margin-top: 1.5rem; /* Для корректной прокрутки */
+    scroll-margin-top: 1.5rem;
 }
 .module.hidden { display: none; }
 .module h2 {
@@ -248,7 +242,6 @@ body {
 .final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
 .hidden { display: none !important; }
 
-/* --- Новые стили для динамического наблюдения --- */
 .previous-value {
     font-size: 0.8em;
     font-weight: 400;
@@ -279,6 +272,20 @@ body {
 }
 #finish-button { background-color: var(--primary-color); }
 
+/* --- НОВЫЙ БЛОК: ИСПРАВЛЕНИЕ МАКЕТА ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
+.module.no-vis .step-content {
+    grid-template-columns: 1fr; /* Делаем одну колонку */
+}
+
+.module.no-vis .instructions {
+    display: none; /* Полностью скрываем левую колонку с инструкциями */
+}
+
+.module.no-vis .visualization {
+    /* Для правой колонки, которая осталась, можно задать максимальную ширину для эстетики */
+    max-width: 450px;
+    margin: 0 auto; /* Центрируем ее */
+}
 
 /* --- АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
 @media (max-width: 992px) {
@@ -295,11 +302,6 @@ body {
     }
     .main-header {
         padding: 0.8rem 1rem;
-        /* Возвращаем логотип в шапку на мобильных */
-        display: flex; 
-        align-items: center;
-        gap: 1rem;
-        text-align: left;
     }
     .header-text h1 {
         font-size: 1rem;
