@@ -16,7 +16,7 @@ function calculateIJV() {
     const variability = ((hmax - hmin) / ((hmax + hmin) / 2)) * 100;
     resultText.innerText = `Вариабельность размера ВЯВ: ${variability.toFixed(1)}%`;
 
-    const cutoff = 18; [cite_start]// Оптимальная точка отсечения – 18% [cite: 26]
+    const cutoff = 18; // Оптимальная точка отсечения – 18%
     if (variability > cutoff) {
         interpretationBox.innerText = `Результат > ${cutoff}%. Вероятен ответ на введение жидкости.`;
         interpretationBox.className = 'interpretation-box responsive';
@@ -44,7 +44,7 @@ function calculateCCA_Vpk() {
     const variability = ((vmax - vmin) / ((vmax + vmin) / 2)) * 100;
     resultText.innerText = `Вариабельность пиковой скорости (Vpk): ${variability.toFixed(1)}%`;
 
-    const cutoff = 12; [cite_start]// Оптимальная точка отсечения – 12% [cite: 42]
+    const cutoff = 12; // Оптимальная точка отсечения – 12%
     if (variability > cutoff) {
         interpretationBox.innerText = `Результат > ${cutoff}%. Вероятен ответ на введение жидкости.`;
         interpretationBox.className = 'interpretation-box responsive';
@@ -68,12 +68,12 @@ function calculateCCA_FTc() {
         return;
     }
 
-    [cite_start]// Расчет по формуле Wodey: FTc = Время потока (мс) + 1,29 * (ЧСС - 60) [cite: 51]
+    // Расчет по формуле Wodey: FTc = Время потока (мс) + 1,29 * (ЧСС - 60)
     const ftc = flowTime + 1.29 * (heartRate - 60);
     resultText.innerText = `Корректированное время потока (FTc): ${ftc.toFixed(0)} мс`;
     
     // Используем базовую точку отсечения 325 мс, так как возраст неизвестен
-    const cutoff = 325; [cite_start]// Оптимальная точка отсечения, менее которой пациент вероятно ответит на введение жидкости [cite: 51]
+    const cutoff = 325; // Оптимальная точка отсечения, менее которой пациент вероятно ответит на введение жидкости
     if (ftc < cutoff) {
         interpretationBox.innerText = `Результат < ${cutoff} мс. Вероятен ответ на введение жидкости.`;
         interpretationBox.className = 'interpretation-box responsive';
