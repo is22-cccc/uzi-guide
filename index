@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивное руководство по УЗИ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>УЗИ-мониторинг волемического статуса</h1>
+    </header>
+
+    <main class="content-container">
+        <nav class="sidebar">
+            <h2>Протоколы</h2>
+            <ul>
+                <li class="active-protocol"><a href="#">Внутренняя яремная вена</a></li>
+                <li><a href="#">Общая сонная артерия</a></li>
+                </ul>
+        </nav>
+
+        <section id="ijv-module" class="module">
+            <h2>Оценка вариабельности внутренней яремной вены (ВЯВ)</h2>
+
+            <div id="step1" class="step active">
+                <h3>Шаг 1: Подготовка и позиционирование</h3>
+                <div class="step-content">
+                    <div class="instructions">
+                        <h4>Инструкции</h4>
+                        <ul>
+                            [cite_start]<li>Уложите пациента строго горизонтально и поверните его голову вбок. [cite: 15]</li>
+                            [cite_start]<li>Поставьте датчик на переднелатеральную поверхность шеи. [cite: 15]</li>
+                            [cite_start]<li><strong>Важно:</strong> Не давите на шею при позиционировании датчика. [cite: 17]</li>
+                            [cite_start]<li>Используйте достаточное количество геля. [cite: 13]</li>
+                        </ul>
+                    </div>
+                    <div class="visualization">
+                        <img src="https://i.imgur.com/xG4hPAb.png" alt="Схема позиционирования датчика на шее">
+                        <p class="caption">Зона установки датчика</p>
+                    </div>
+                </div>
+                <button class="button-next" onclick="goToStep(2)">Далее: Визуализация</button>
+            </div>
+
+            <div id="step2" class="step">
+                <h3>Шаг 2: Визуализация и получение изображения</h3>
+                 <div class="step-content">
+                    <div class="instructions">
+                        <h4>Что искать на экране</h4>
+                        [cite_start]<p>Визуализируйте ВЯВ и сонную артерию в поперечной проекции. [cite: 15] ВЯВ будет овальной и будет изменять свой диаметр при дыхании.</p>
+                    </div>
+                    <div class="visualization">
+                        <img src="https://i.imgur.com/8f1yD4Z.gif" alt="Анимация УЗИ яремной вены и сонной артерии">
+                        <p class="caption">Анимированный пример УЗИ-изображения</p>
+                    </div>
+                </div>
+                <button class="button-next" onclick="goToStep(3)">Далее: Измерение</button>
+            </div>
+
+            <div id="step3" class="step">
+                <h3>Шаг 3: Измерение и расчет</h3>
+                <div class="step-content">
+                    <div class="instructions">
+                        <h4>Проведение измерения</h4>
+                         <ul>
+                            [cite_start]<li>Включите М-режим и наведите луч на просвет яремной вены. [cite: 21]</li>
+                            [cite_start]<li>Зафиксируйте цикл вдох-выдох и нажмите Freeze. [cite: 22]</li>
+                             <li><strong>Задание:</strong> Введите максимальный (на выдохе) и минимальный (на вдохе) диаметр вены в поля ниже.</li>
+                        </ul>
+                        <div class="calculator">
+                            <label for="hmax">Макс. диаметр (Hmax), мм:</label>
+                            <input type="number" id="hmax" placeholder="напр. 15">
+                            <label for="hmin">Мин. диаметр (Hmin), мм:</label>
+                            <input type="number" id="hmin" placeholder="напр. 5">
+                            <button onclick="calculateIJV()">Рассчитать</button>
+                        </div>
+                    </div>
+                    <div id="result-container" class="visualization result">
+                        <h4>Результат</h4>
+                        <p id="result-text">Здесь будет результат расчета...</p>
+                        <div id="interpretation" class="interpretation-box"></div>
+                    </div>
+                </div>
+                 <button class="button-next" onclick="goToStep(1)">Начать заново</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
