@@ -9,6 +9,8 @@
     --text-light: #fff;
     --border-color: #eef2f5;
     --white: #fff;
+    --warning-bg: #fff3e0;
+    --warning-text: #e65100;
 }
 
 /* --- Базовые стили --- */
@@ -170,9 +172,13 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+    align-items: flex-start;
     margin-top: 1.5rem;
 }
-.step-content.no-grid { display: contents; }
+.sub-module .step-content {
+    grid-template-columns: 1fr 1fr;
+}
+
 
 .instructions {
     display: flex;
@@ -214,7 +220,7 @@ body {
     min-height: 50px;
 }
 .interpretation-box.responsive { background-color: #e8f5e9; color: #2e7d32; }
-.interpretation-box.non-responsive { background-color: #fff3e0; color: #e65100; }
+.interpretation-box.non-responsive { background-color: var(--warning-bg); color: var(--warning-text); }
 .interpretation-box.neutral { background-color: #eef2f5; color: #546e7a; }
 
 .sub-module { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); }
@@ -229,7 +235,33 @@ body {
 .final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
 .hidden { display: none !important; }
 
-#final-result-section .form-group { margin: 1.5rem 0; }
-#final-result-section label { font-weight: bold; }
-#final-result-section select { width: 100%; padding: 0.8rem; margin-top: 0.5rem; }
+/* --- Новые стили для динамического наблюдения --- */
+.previous-value {
+    font-size: 0.8em;
+    font-weight: 400;
+    color: #888;
+    margin-left: 8px;
+}
+#follow-up-evaluation {
+    background-color: var(--warning-bg);
+    border: 2px solid var(--warning-text);
+}
+#follow-up-evaluation h2 {
+    color: var(--warning-text);
+    border-bottom-color: rgba(230, 81, 0, 0.2);
+}
+.form-group {
+    margin: 1.5rem 0;
+}
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
 #finish-button { background-color: var(--primary-color); }
