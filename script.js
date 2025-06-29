@@ -16,6 +16,7 @@ function generateUUID() {
     if (crypto && crypto.randomUUID) {
         return crypto.randomUUID();
     }
+    // "Подстраховочный" метод для старых браузеров
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
         const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
@@ -26,23 +27,6 @@ function generateUUID() {
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
-}
-
-// --- ИСПРАВЛЕННАЯ И БОЛЕЕ НАДЕЖНАЯ ФУНКЦИЯ ---
-function setupChoiceButtons(groupId, callback) {
-    const group = document.getElementById(groupId);
-    const buttons = group.querySelectorAll('.choice-button');
-    
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Убираем класс 'selected' у всех кнопок в группе
-            buttons.forEach(btn => btn.classList.remove('selected'));
-            // Добавляем класс 'selected' нажатой кнопке
-            button.classList.add('selected');
-            // Вызываем колбэк с нужным значением
-            callback(button.dataset.value);
-        });
-    });
 }
 
 // --- Логика сессий ---
@@ -78,12 +62,15 @@ function continueSession(sessionId) {
     showScreen('protocol-screen');
 }
 
+// ФУНКЦИИ ВЫБОРА ПРОТОКОЛА И РЕЖИМА
 function selectProtocol(protocolName) {
+    console.log("Выбран протокол:", protocolName);
     currentSession.protocol = protocolName;
     showScreen('vis-mode-screen');
 }
 
 function selectVisMode(mode) {
+    console.log("Выбран режим:", mode);
     currentSession.visMode = (mode === 'true');
     applySessionSettings();
     showScreen('main-workspace');
@@ -127,11 +114,9 @@ function loadPreviousMeasurements(patientId) {
 
     const lastMeasurements = {};
     allPatientData.filter(d => d.dataType === 'measurement').forEach(m => {
-        // Мы сохраняем весь объект data, в котором есть все нужные поля
         lastMeasurements[m.measurement] = m.data; 
     });
     
-    // Отображаем предыдущие значения
     if (lastMeasurements['ВЯВ']) {
         document.getElementById('prev-hmax').textContent = `(пред. ${lastMeasurements['ВЯВ'].hmax})`;
         document.getElementById('prev-hmin').textContent = `(пред. ${lastMeasurements['ВЯВ'].hmin})`;
@@ -197,7 +182,6 @@ function calculateCCA_FTc(){
 
 
 // --- Итоговые функции и сбор данных ---
-
 function generateFinalReport() {
     let responsiveCount = 0;
     let nonResponsiveCount = 0;
@@ -263,7 +247,6 @@ async function finishSession() {
 
 function saveMeasurement(measurementName, data) {
     currentSession.measurements[measurementName] = data;
-
     const dataToSend = {
         dataType: 'measurement',
         timestamp: new Date().toISOString(),
@@ -272,12 +255,9 @@ function saveMeasurement(measurementName, data) {
         measurement: measurementName,
         data: data 
     };
-    
-    // Сохраняем в localStorage для динамического наблюдения
     let allPatientData = JSON.parse(localStorage.getItem(`data_${currentSession.patientId}`)) || [];
     allPatientData.push(dataToSend);
     localStorage.setItem(`data_${currentSession.patientId}`, JSON.stringify(allPatientData));
-    
     sendDataToGoogleSheet(dataToSend);
 }
 
@@ -299,9 +279,26 @@ async function sendDataToGoogleSheet(data) {
 
 // --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
-    setupChoiceButtons('protocol-choice', selectProtocol);
-    setupChoiceButtons('vis-mode-choice', selectVisMode);
+    // ПРЯМАЯ И НАДЕЖНАЯ НАСТРОЙКА КНОПОК
+    const protocolButtons = document.querySelectorAll('#protocol-choice .choice-button');
+    protocolButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            protocolButtons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectProtocol(button.dataset.value);
+        });
+    });
+
+    const visModeButtons = document.querySelectorAll('#vis-mode-choice .choice-button');
+    visModeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            visModeButtons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            selectVisMode(button.dataset.value);
+        });
+    });
     
+    // Загрузка активных сессий
     let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
     const oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
     sessions = sessions.filter(s => new Date(s.time).getTime() > oneDayAgo);
@@ -350,4 +347,20 @@ function setupSidebarScroll() {
         });
     }, { rootMargin: '-40% 0px -60% 0px' });
     modules.forEach(module => observer.observe(module));
+}
+
+function generateProtocolMenu() {
+    const menu = document.getElementById('protocol-menu');
+    menu.innerHTML = '';
+    document.querySelectorAll('.module:not(.hidden)').forEach(module => {
+        // Исключаем блок follow-up из меню
+        if (module.id === 'follow-up-evaluation') return;
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${module.id}`;
+        a.textContent = module.querySelector('h2').textContent;
+        li.appendChild(a);
+        menu.appendChild(li);
+    });
+    setupSidebarScroll();
 }
