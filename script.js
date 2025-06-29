@@ -274,15 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
             selectProtocol(button.dataset.value);
         });
     });
-
-    const visModeButtons = document.querySelectorAll('#vis-mode-choice .choice-button');
-    visModeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            visModeButtons.forEach(btn => btn.classList.remove('selected'));
-            button.classList.add('selected');
-            selectVisMode(button.dataset.value);
-        });
-    });
     
     // Загрузка активных сессий
     let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
