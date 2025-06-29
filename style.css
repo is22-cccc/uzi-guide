@@ -34,6 +34,12 @@ body {
 }
 .screen-content h1, .screen-content h2 { color: var(--primary-color); }
 
+/* --- НОВЫЙ СТИЛЬ: Логотип на стартовом экране --- */
+.logo {
+    max-width: 200px;
+    margin-bottom: 1.5rem;
+}
+
 .action-button {
     display: block;
     width: 100%;
@@ -97,11 +103,25 @@ body {
 
 
 /* --- Стили для основного рабочего пространства --- */
+
+/* --- ИЗМЕНЕННЫЙ СТИЛЬ: Шапка с логотипом --- */
 .main-header {
     background-color: var(--primary-color);
     color: var(--text-light);
-    padding: 1rem 2rem;
-    text-align: center;
+    padding: 0.8rem 2rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.header-logo {
+    height: 40px; /* Фиксированная высота для лого в шапке */
+    width: auto;
+}
+.header-text h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--white);
 }
 .sub-header { font-size: 0.9rem; opacity: 0.8; margin: 0; }
 
@@ -267,54 +287,44 @@ body {
 #finish-button { background-color: var(--primary-color); }
 
 
-/* --- НОВЫЙ БЛОК: АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
+/* --- АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
 @media (max-width: 992px) {
-    /* На средних экранах (планшеты) просто убираем сайдбар */
     .sidebar {
         display: none;
     }
 }
 
 @media (max-width: 768px) {
-    /* На маленьких экранах (телефоны) делаем полную перестройку */
-    
-    /* Убираем боковые отступы у основного контейнера, чтобы шапка была во всю ширину */
     .content-container {
-        flex-direction: column; /* Ставим сайдбар и контент друг под другом */
-        margin: 0; /* Убираем отступы */
+        flex-direction: column; 
+        margin: 0; 
         gap: 0;
     }
-
-    /* Возвращаем отступы для модулей, чтобы они не прилипали к краям */
+    .main-header {
+        padding: 0.8rem 1rem;
+    }
+    .header-text h1 {
+        font-size: 1rem;
+    }
     .modules-wrapper {
         padding: 1rem;
         gap: 1rem;
     }
-
-    /* Сайдбар скрыт по правилу выше */
     .sidebar {
         display: none;
     }
-    
     .module {
         padding: 1.5rem;
     }
-
-    /* Самое важное: делаем одноколоночный макет для контента модуля */
     .step-content {
-        grid-template-columns: 1fr; /* Все элементы будут идти друг под другом */
+        grid-template-columns: 1fr; 
     }
-
     .sub-module .step-content {
         grid-template-columns: 1fr;
     }
-
-    /* Улучшаем вид кнопок выбора на маленьких экранах */
     .choice-group {
         flex-direction: column;
     }
-
-    /* Убираем отступы у экрана выбора, чтобы он лучше выглядел */
     .screen-content {
         margin: 5vh auto;
         padding: 1rem;
