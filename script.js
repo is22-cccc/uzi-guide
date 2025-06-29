@@ -56,8 +56,15 @@ function continueSession(sessionId) {
 }
 
 function selectProtocol(protocolName) {
-    currentSession.protocol = protocolName;
-    showScreen('vis-mode-screen');
+    currentSession.protocol = protocolName;
+    // Сразу устанавливаем режим визуализации.
+    // Установите `true`, если хотите всегда показывать картинки-инструкции,
+    // или `false`, если хотите их скрыть по умолчанию.
+    currentSession.visMode = false; 
+    
+    // Сразу применяем настройки и переходим к работе
+    applySessionSettings();
+    showScreen('main-workspace');
 }
 
 function selectVisMode(mode) {
