@@ -265,3 +265,58 @@ body {
     border: 1px solid #ccc;
 }
 #finish-button { background-color: var(--primary-color); }
+
+
+/* --- НОВЫЙ БЛОК: АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
+@media (max-width: 992px) {
+    /* На средних экранах (планшеты) просто убираем сайдбар */
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    /* На маленьких экранах (телефоны) делаем полную перестройку */
+    
+    /* Убираем боковые отступы у основного контейнера, чтобы шапка была во всю ширину */
+    .content-container {
+        flex-direction: column; /* Ставим сайдбар и контент друг под другом */
+        margin: 0; /* Убираем отступы */
+        gap: 0;
+    }
+
+    /* Возвращаем отступы для модулей, чтобы они не прилипали к краям */
+    .modules-wrapper {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    /* Сайдбар скрыт по правилу выше */
+    .sidebar {
+        display: none;
+    }
+    
+    .module {
+        padding: 1.5rem;
+    }
+
+    /* Самое важное: делаем одноколоночный макет для контента модуля */
+    .step-content {
+        grid-template-columns: 1fr; /* Все элементы будут идти друг под другом */
+    }
+
+    .sub-module .step-content {
+        grid-template-columns: 1fr;
+    }
+
+    /* Улучшаем вид кнопок выбора на маленьких экранах */
+    .choice-group {
+        flex-direction: column;
+    }
+
+    /* Убираем отступы у экрана выбора, чтобы он лучше выглядел */
+    .screen-content {
+        margin: 5vh auto;
+        padding: 1rem;
+    }
+}
