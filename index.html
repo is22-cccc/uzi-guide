@@ -10,8 +10,8 @@
     <!-- ЭКРАН 1: СТАРТОВЫЙ -->
     <div id="start-screen" class="screen active">
         <div class="screen-content">
-            <!-- Логотип добавлен сюда -->
-            <img src="https://mmccdzm.ru/local/templates/mmkc/img/logo.svg" alt="Логотип ММКЦ Коммунарка" class="logo">
+            <!-- Ссылка на логотип изменена на локальную -->
+            <img src="assets/logo.svg" alt="Логотип ММКЦ Коммунарка" class="logo">
             <h1>УЗИ-мониторинг волемического статуса</h1>
             <p>Добро пожаловать в интерактивное руководство.</p>
             <button class="action-button" onclick="startNewSession()">Начать новое обследование</button>
@@ -50,8 +50,8 @@
     <!-- ЭКРАН 4: ОСНОВНОЙ ИНТЕРФЕЙС -->
     <div id="main-workspace" class="screen">
         <header class="main-header">
-            <!-- Логотип добавлен в шапку -->
-            <img src="https://mmccdzm.ru/local/templates/mmkc/img/logo.svg" alt="Логотип ММКЦ Коммунарка" class="header-logo">
+            <!-- Ссылка на логотип изменена на локальную -->
+            <img src="assets/logo.svg" alt="Логотип ММКЦ Коммунарка" class="header-logo">
             <div class="header-text">
                 <h1>Ультразвуковой мониторинг волемического статуса</h1>
                 <p id="session-info" class="sub-header"></p>
@@ -79,8 +79,8 @@
                     </div>
                 </div>
 
-                <!-- МОДУЛЬ 1: ВЯВ -->
-                <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
+                <!-- ... (остальные модули остаются без изменений) ... -->
+                 <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
                     <div class="step-content">
                         <div class="instructions">
@@ -110,8 +110,6 @@
                         </div>
                     </div>
                 </section>
-                
-                <!-- МОДУЛЬ 2: ОСА -->
                 <section id="cca-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка общей сонной артерии (ОСА)</h2>
                     <div class="sub-module">
@@ -171,8 +169,6 @@
                         </div>
                     </div>
                 </section>
-                
-                <!-- ... ДРУГИЕ МОДУЛИ-ЗАГОТОВКИ ... -->
                 <section id="brachial-artery-module" class="module" data-protocol="advanced,expert">
                     <h2>Оценка плечевой артерии</h2>
                     <p class="placeholder-text">Модуль в разработке.</p>
@@ -197,8 +193,6 @@
                      <h2>VTI на аорте</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
-
-                <!-- ИТОГОВЫЙ БЛОК -->
                 <div class="final-actions">
                     <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
                     <div id="final-result-section" class="hidden">
