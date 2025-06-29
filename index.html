@@ -10,7 +10,7 @@
     <!-- ЭКРАН 1: СТАРТОВЫЙ -->
     <div id="start-screen" class="screen active">
         <div class="screen-content">
-            <!-- Здесь используется обычный логотип -->
+            <!-- Используется оригинальный логотип, который вы загружали -->
             <img src="assets/logo.svg" alt="Логотип ММКЦ Коммунарка" class="logo">
             <h1>УЗИ-мониторинг волемического статуса</h1>
             <p>Добро пожаловать в интерактивное руководство.</p>
@@ -50,8 +50,7 @@
     <!-- ЭКРАН 4: ОСНОВНОЙ ИНТЕРФЕЙС -->
     <div id="main-workspace" class="screen">
         <header class="main-header">
-            <!-- ССЫЛКА ИЗМЕНЕНА НА НОВЫЙ БЕЛЫЙ ЛОГОТИП -->
-            <img src="assets/logo-white.svg" alt="Логотип ММКЦ Коммунарка" class="header-logo">
+            <!-- ЛОГОТИП ОТСЮДА ПОЛНОСТЬЮ УБРАН -->
             <div class="header-text">
                 <h1>Ультразвуковой мониторинг волемического статуса</h1>
                 <p id="session-info" class="sub-header"></p>
@@ -79,17 +78,23 @@
                     </div>
                 </div>
 
-                <!-- ... (остальные модули остаются без изменений) ... -->
-                 <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
+                <!-- МОДУЛЬ 1: ВЯВ -->
+                <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
                     <div class="step-content">
                         <div class="instructions">
                             <div class="visualization-element">
                                 <h4>Инструкции и визуализация</h4>
                                 <p>Уложите пациента горизонтально, поверните голову. Поставьте датчик на переднелатеральную поверхность шеи. Не давите.</p>
-                                <img src="https://i.imgur.com/xG4hPAb.png" alt="[Изображение схемы позиционирования датчика на шее]">
+                                <img src="assets/ijv-schema.png" alt="Схема позиционирования датчика на шее">
                             </div>
-                            <div class="calculator">
+                            <div id="ijv-vis-2" class="visualization-element">
+                                <h4>Пример изображения на УЗИ</h4>
+                                <img src="assets/ijv-animation.gif" alt="Анимация УЗИ яремной вены">
+                            </div>
+                        </div>
+                        <div class="visualization">
+                             <div class="calculator">
                                 <label for="hmax">Макс. диаметр (Hmax), мм: <span class="previous-value" id="prev-hmax"></span></label>
                                 <input type="number" id="hmax" placeholder="напр. 15">
                                 <label for="hmin">Мин. диаметр (Hmin), мм: <span class="previous-value" id="prev-hmin"></span></label>
@@ -102,14 +107,16 @@
                                 </select>
                                 <button onclick="calculateIJV()">Рассчитать</button>
                             </div>
-                        </div>
-                        <div class="visualization result">
-                            <h4>Результат</h4>
-                            <p id="ijv-result-text">...</p>
-                            <div id="ijv-interpretation" class="interpretation-box"></div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="ijv-result-text">...</p>
+                                <div id="ijv-interpretation" class="interpretation-box"></div>
+                            </div>
                         </div>
                     </div>
                 </section>
+                
+                <!-- МОДУЛЬ 2: ОСА -->
                 <section id="cca-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка общей сонной артерии (ОСА)</h2>
                     <div class="sub-module">
@@ -169,6 +176,8 @@
                         </div>
                     </div>
                 </section>
+                
+                <!-- ... ДРУГИЕ МОДУЛИ ... -->
                 <section id="brachial-artery-module" class="module" data-protocol="advanced,expert">
                     <h2>Оценка плечевой артерии</h2>
                     <p class="placeholder-text">Модуль в разработке.</p>
@@ -193,6 +202,8 @@
                      <h2>VTI на аорте</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
+
+                <!-- ИТОГОВЫЙ БЛОК -->
                 <div class="final-actions">
                     <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
                     <div id="final-result-section" class="hidden">
