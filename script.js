@@ -28,14 +28,20 @@ function showScreen(screenId) {
     document.getElementById(screenId).classList.add('active');
 }
 
+// --- ИСПРАВЛЕННАЯ И БОЛЕЕ НАДЕЖНАЯ ФУНКЦИЯ ---
 function setupChoiceButtons(groupId, callback) {
     const group = document.getElementById(groupId);
-    group.addEventListener('click', e => {
-        if (e.target.classList.contains('choice-button')) {
-            group.querySelectorAll('.choice-button').forEach(btn => btn.classList.remove('selected'));
-            e.target.classList.add('selected');
-            callback(e.target.dataset.value);
-        }
+    const buttons = group.querySelectorAll('.choice-button');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Убираем класс 'selected' у всех кнопок в группе
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            // Добавляем класс 'selected' нажатой кнопке
+            button.classList.add('selected');
+            // Вызываем колбэк с нужным значением
+            callback(button.dataset.value);
+        });
     });
 }
 
@@ -43,6 +49,9 @@ function setupChoiceButtons(groupId, callback) {
 
 function startNewSession() {
     currentSession.isContinuation = false;
+    // Очищаем предыдущие значения на всякий случай
+    document.querySelectorAll('.previous-value').forEach(span => span.textContent = '');
+
     const researcherId = localStorage.getItem('researcherId') || `res-${generateUUID()}`;
     localStorage.setItem('researcherId', researcherId);
     
@@ -69,23 +78,21 @@ function continueSession(sessionId) {
     showScreen('protocol-screen');
 }
 
-// ИСПРАВЛЕННАЯ ЛОГИКА ПЕРЕХОДОВ
 function selectProtocol(protocolName) {
     currentSession.protocol = protocolName;
-    showScreen('vis-mode-screen'); // Убрана задержка
+    showScreen('vis-mode-screen');
 }
 
 function selectVisMode(mode) {
     currentSession.visMode = (mode === 'true');
     applySessionSettings();
-    showScreen('main-workspace'); // Убрана задержка
+    showScreen('main-workspace');
 }
 
 
 function applySessionSettings() {
     // 1. Показываем/скрываем модули в зависимости от протокола
     document.querySelectorAll('.module').forEach(module => {
-        // Исключаем блок follow-up из этой логики
         if (module.id === 'follow-up-evaluation') return;
         const protocols = module.dataset.protocol.split(',');
         module.classList.toggle('hidden', !protocols.includes(currentSession.protocol));
@@ -120,7 +127,8 @@ function loadPreviousMeasurements(patientId) {
 
     const lastMeasurements = {};
     allPatientData.filter(d => d.dataType === 'measurement').forEach(m => {
-        lastMeasurements[m.measurement] = m.data; // Сохраняем именно объект data
+        // Мы сохраняем весь объект data, в котором есть все нужные поля
+        lastMeasurements[m.measurement] = m.data; 
     });
     
     // Отображаем предыдущие значения
@@ -303,13 +311,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('active-sessions-list');
     
     if (sessions.length > 0) {
+        container.classList.remove('hidden');
+        list.innerHTML = ''; // Очищаем список перед заполнением
         sessions.forEach(s => {
             const li = document.createElement('li');
             li.textContent = `Пациент ${s.id.substring(4,10)} (начато: ${new Date(s.time).toLocaleString()})`;
             li.onclick = () => continueSession(s.id);
             list.appendChild(li);
         });
-        container.classList.remove('hidden');
     } else {
        container.classList.add('hidden');
     }
