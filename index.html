@@ -10,6 +10,8 @@
     <!-- ЭКРАН 1: СТАРТОВЫЙ -->
     <div id="start-screen" class="screen active">
         <div class="screen-content">
+            <!-- Логотип добавлен сюда -->
+            <img src="https://mmccdzm.ru/local/templates/mmkc/img/logo.svg" alt="Логотип ММКЦ Коммунарка" class="logo">
             <h1>УЗИ-мониторинг волемического статуса</h1>
             <p>Добро пожаловать в интерактивное руководство.</p>
             <button class="action-button" onclick="startNewSession()">Начать новое обследование</button>
@@ -48,8 +50,12 @@
     <!-- ЭКРАН 4: ОСНОВНОЙ ИНТЕРФЕЙС -->
     <div id="main-workspace" class="screen">
         <header class="main-header">
-            <h1>Ультразвуковой мониторинг волемического статуса</h1>
-            <p id="session-info" class="sub-header"></p>
+            <!-- Логотип добавлен в шапку -->
+            <img src="https://mmccdzm.ru/local/templates/mmkc/img/logo.svg" alt="Логотип ММКЦ Коммунарка" class="header-logo">
+            <div class="header-text">
+                <h1>Ультразвуковой мониторинг волемического статуса</h1>
+                <p id="session-info" class="sub-header"></p>
+            </div>
         </header>
         <main class="content-container">
             <nav class="sidebar">
@@ -59,7 +65,7 @@
                 </ul>
             </nav>
             <div class="modules-wrapper">
-                <!-- БЛОК ДЛЯ ДИНАМИЧЕСКОГО НАБЛЮДЕНИЯ (появляется при продолжении сессии) -->
+                <!-- БЛОК ДЛЯ ДИНАМИЧЕСКОГО НАБЛЮДЕНИЯ -->
                 <div id="follow-up-evaluation" class="module hidden">
                     <h2>Оценка предыдущего шага</h2>
                     <div class="form-group">
@@ -73,7 +79,7 @@
                     </div>
                 </div>
 
-                <!-- МОДУЛЬ 1: ВЯВ (с исправленным layout) -->
+                <!-- МОДУЛЬ 1: ВЯВ -->
                 <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
                     <div class="step-content">
@@ -104,7 +110,7 @@
                         </div>
                     </div>
                 </section>
-
+                
                 <!-- МОДУЛЬ 2: ОСА -->
                 <section id="cca-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка общей сонной артерии (ОСА)</h2>
@@ -215,7 +221,6 @@
             </div>
         </main>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
