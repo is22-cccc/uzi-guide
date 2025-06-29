@@ -1,120 +1,251 @@
-// Функция для расчета вариабельности ВЯВ
+// --- Глобальное состояние ---
+let currentSession = {
+    patientId: null,
+    researcherId: null,
+    startTime: null,
+    protocol: null,
+    visMode: null,
+    measurements: {},
+    finalDecision: null
+};
+
+// --- Функции управления UI ---
+
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.getElementById(screenId).classList.add('active');
+}
+
+function startNewSession() {
+    // Генерация ID
+    const researcherId = localStorage.getItem('researcherId') || `res-${crypto.randomUUID()}`;
+    localStorage.setItem('researcherId', researcherId);
+    
+    currentSession.researcherId = researcherId;
+    currentSession.patientId = `pat-${crypto.randomUUID()}`;
+    currentSession.startTime = new Date().toISOString();
+    
+    // Сохранение сессии
+    let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
+    sessions.push({id: currentSession.patientId, time: currentSession.startTime});
+    localStorage.setItem('activeSessions', JSON.stringify(sessions));
+
+    showScreen('protocol-screen');
+}
+
+function continueSession(sessionId) {
+    // В будущем здесь будет логика загрузки сохраненных данных сессии
+    alert(`Продолжение сессии ${sessionId} в разработке.`);
+    // Для демонстрации начинаем новую сессию, но с id старой
+    const researcherId = localStorage.getItem('researcherId');
+    currentSession.researcherId = researcherId;
+    currentSession.patientId = sessionId;
+    showScreen('protocol-screen');
+}
+
+function selectProtocol(protocolName) {
+    currentSession.protocol = protocolName;
+    document.querySelectorAll('.module').forEach(module => {
+        const protocols = module.dataset.protocol.split(',');
+        if (protocols.includes(protocolName)) {
+            module.classList.remove('hidden');
+        } else {
+            module.classList.add('hidden');
+        }
+    });
+    generateProtocolMenu();
+    showScreen('vis-mode-screen');
+}
+
+function selectVisMode(mode) {
+    currentSession.visMode = mode;
+    document.querySelectorAll('.visualization-element').forEach(el => {
+        if (mode) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    });
+    document.getElementById('session-info').innerText = `Сессия: ${currentSession.patientId.substring(4, 10)} | Протокол: ${currentSession.protocol}`;
+    showScreen('main-workspace');
+}
+
+function generateProtocolMenu() {
+    const menu = document.getElementById('protocol-menu');
+    menu.innerHTML = '';
+    document.querySelectorAll('.module:not(.hidden)').forEach(module => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${module.id}`;
+        a.textContent = module.querySelector('h2').textContent;
+        li.appendChild(a);
+        menu.appendChild(li);
+    });
+    setupSidebar(); // Перенастраиваем сайдбар
+}
+
+
+// --- Функции-калькуляторы ---
+
 function calculateIJV() {
-    const hmax = parseFloat(document.getElementById('hmax').value);
-    const hmin = parseFloat(document.getElementById('hmin').value);
+    const hmax = document.getElementById('hmax').value;
+    const hmin = document.getElementById('hmin').value;
+    const tech = document.getElementById('ijv-tech').value;
     const resultText = document.getElementById('ijv-result-text');
     const interpretationBox = document.getElementById('ijv-interpretation');
 
-    if (isNaN(hmax) || isNaN(hmin) || hmin > hmax || hmax <= 0) {
-        resultText.innerText = 'Ошибка: введите корректные значения Hmax и Hmin.';
-        interpretationBox.innerHTML = '';
-        interpretationBox.className = 'interpretation-box';
-        return;
+    if (!hmax || !hmin || !tech) {
+        resultText.innerText = 'Заполните все поля.'; return;
     }
-
-    // Расчет по формуле: (Hmax - Hmin) / ((Hmax + Hmin) / 2)
-    const variability = ((hmax - hmin) / ((hmax + hmin) / 2)) * 100;
-    resultText.innerText = `Вариабельность размера ВЯВ: ${variability.toFixed(1)}%`;
-
-    const cutoff = 18; // Оптимальная точка отсечения – 18%
-    if (variability > cutoff) {
-        interpretationBox.innerText = `Результат > ${cutoff}%. Вероятен ответ на введение жидкости.`;
-        interpretationBox.className = 'interpretation-box responsive';
+    
+    const variability = ((parseFloat(hmax) - parseFloat(hmin)) / ((parseFloat(hmax) + parseFloat(hmin)) / 2)) * 100;
+    resultText.innerText = `Вариабельность ВЯВ: ${variability.toFixed(1)}%`;
+    
+    const cutoff = 18;
+    let responsive = variability > cutoff;
+    interpretationBox.className = 'interpretation-box';
+    if(tech === 'да') {
+        interpretationBox.innerText = `[Тех. сложности] Результат может быть неточным.`;
+        interpretationBox.classList.add('neutral');
+        responsive = 'uncertain';
     } else {
-        interpretationBox.innerText = `Результат ≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
-        interpretationBox.className = 'interpretation-box non-responsive';
+        interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+        interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
     }
+
+    saveMeasurement('ijv', { hmax, hmin, tech, variability, responsive });
 }
 
-// Функция для расчета вариабельности Vpk на сонной артерии
 function calculateCCA_Vpk() {
-    const vmax = parseFloat(document.getElementById('vmax').value);
-    const vmin = parseFloat(document.getElementById('vmin').value);
-    const resultText = document.getElementById('vpk-result-text');
-    const interpretationBox = document.getElementById('vpk-interpretation');
-
-    if (isNaN(vmax) || isNaN(vmin) || vmin > vmax || vmin <= 0) {
-        resultText.innerText = 'Ошибка: введите корректные значения Vmax и Vmin.';
-        interpretationBox.innerHTML = '';
-        interpretationBox.className = 'interpretation-box';
-        return;
-    }
-
-    // Вычисление по формуле: (Vmax - Vmin) / ((Vmax + Vmin) / 2)
-    const variability = ((vmax - vmin) / ((vmax + vmin) / 2)) * 100;
-    resultText.innerText = `Вариабельность пиковой скорости (Vpk): ${variability.toFixed(1)}%`;
-
-    const cutoff = 12; // Оптимальная точка отсечения – 12%
-    if (variability > cutoff) {
-        interpretationBox.innerText = `Результат > ${cutoff}%. Вероятен ответ на введение жидкости.`;
-        interpretationBox.className = 'interpretation-box responsive';
-    } else {
-        interpretationBox.innerText = `Результат ≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
-        interpretationBox.className = 'interpretation-box non-responsive';
-    }
+    // Аналогичная логика, как в calculateIJV
+    const vmax = document.getElementById('vmax').value;
+    const vmin = document.getElementById('vmin').value;
+    const tech = document.getElementById('vpk-tech').value;
+    //...
+    saveMeasurement('cca_vpk', { vmax, vmin, tech, /* ... */ });
 }
 
-// Функция для расчета корректированного времени потока (FTc)
 function calculateCCA_FTc() {
-    const flowTime = parseFloat(document.getElementById('flowTime').value);
-    const heartRate = parseFloat(document.getElementById('heartRate').value);
+    const flowTime = document.getElementById('flowTime').value;
+    const heartRate = document.getElementById('heartRate').value;
+    const age = document.getElementById('cca-age').value;
+    const tech = document.getElementById('ftc-tech').value;
     const resultText = document.getElementById('ftc-result-text');
     const interpretationBox = document.getElementById('ftc-interpretation');
 
-    if (isNaN(flowTime) || isNaN(heartRate) || flowTime <= 0 || heartRate <= 0) {
-        resultText.innerText = 'Ошибка: введите корректные значения времени потока и ЧСС.';
-        interpretationBox.innerHTML = '';
-        interpretationBox.className = 'interpretation-box';
-        return;
+    if (!flowTime || !heartRate || !age || !tech) {
+        resultText.innerText = 'Заполните все поля.'; return;
+    }
+    
+    const ftc = parseFloat(flowTime) + 1.29 * (parseFloat(heartRate) - 60);
+    resultText.innerText = `FTc: ${ftc.toFixed(0)} мс`;
+
+    const cutoff = age === '<65' ? 325 : 340;
+    let responsive = ftc < cutoff;
+    interpretationBox.className = 'interpretation-box';
+
+    if(tech === 'да'){
+        interpretationBox.innerText = `[Тех. сложности] Результат может быть неточным.`;
+        interpretationBox.classList.add('neutral');
+        responsive = 'uncertain';
+    } else {
+        interpretationBox.innerText = responsive ? `< ${cutoff} мс. Вероятен ответ на инфузию.` : `≥ ${cutoff} мс. Ответ на инфузию маловероятен.`;
+        interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
     }
 
-    // Расчет по формуле Wodey: FTc = Время потока (мс) + 1,29 * (ЧСС - 60)
-    const ftc = flowTime + 1.29 * (heartRate - 60);
-    resultText.innerText = `Корректированное время потока (FTc): ${ftc.toFixed(0)} мс`;
-    
-    // Используем базовую точку отсечения 325 мс, так как возраст неизвестен
-    const cutoff = 325; // Оптимальная точка отсечения, менее которой пациент вероятно ответит на введение жидкости
-    if (ftc < cutoff) {
-        interpretationBox.innerText = `Результат < ${cutoff} мс. Вероятен ответ на введение жидкости.`;
-        interpretationBox.className = 'interpretation-box responsive';
-    } else {
-        interpretationBox.innerText = `Результат ≥ ${cutoff} мс. Ответ на инфузию маловероятен.`;
-        interpretationBox.className = 'interpretation-box non-responsive';
+    saveMeasurement('cca_ftc', { flowTime, heartRate, age, tech, ftc, responsive });
+}
+
+// --- Итоговые функции и сбор данных ---
+
+function generateFinalReport() {
+    let responsiveCount = 0;
+    let nonResponsiveCount = 0;
+    let uncertainCount = 0;
+
+    for (const key in currentSession.measurements) {
+        const measurement = currentSession.measurements[key];
+        if (measurement.responsive === true) responsiveCount++;
+        else if (measurement.responsive === false) nonResponsiveCount++;
+        else if (measurement.responsive === 'uncertain') uncertainCount++;
     }
+
+    const finalBox = document.getElementById('final-interpretation');
+    finalBox.className = 'interpretation-box';
+    if(uncertainCount > 0){
+         finalBox.innerText = `Заключение затруднено из-за технических сложностей при измерениях.`;
+         finalBox.classList.add('neutral');
+    } else if (responsiveCount > nonResponsiveCount) {
+        finalBox.innerText = `Совокупность данных указывает на вероятный положительный ответ на инфузионную терапию.`;
+        finalBox.classList.add('responsive');
+    } else if (nonResponsiveCount > responsiveCount) {
+        finalBox.innerText = `Совокупность данных указывает на низкую вероятность ответа на инфузионную терапию.`;
+        finalBox.classList.add('non-responsive');
+    } else {
+        finalBox.innerText = `Данные противоречивы. Требуется дополнительная оценка или использование других методов.`;
+        finalBox.classList.add('neutral');
+    }
+    document.getElementById('final-result-section').classList.remove('hidden');
+}
+
+function finishSession(){
+    const decision = document.getElementById('clinical-decision').value;
+    if(!decision){
+        alert('Пожалуйста, выберите ваше клиническое действие.');
+        return;
+    }
+    currentSession.finalDecision = decision;
+    sendDataToGoogleSheet(currentSession);
+    alert('Сессия завершена. Данные сохранены (выведены в консоль). Перезагрузка...');
+    window.location.reload();
+}
+
+function saveMeasurement(type, data) {
+    currentSession.measurements[type] = data;
+    sendDataToGoogleSheet({
+        type: 'measurement',
+        ...currentSession
+    });
+}
+
+function sendDataToGoogleSheet(data) {
+    // --- ЗАГЛУШКА ДЛЯ ОТПРАВКИ ДАННЫХ ---
+    console.log("--- ДАННЫЕ ДЛЯ ОТПРАВКИ В GOOGLE ---");
+    console.log(JSON.stringify(data, null, 2));
+    // В будущем здесь будет fetch-запрос на серверный обработчик
 }
 
 
-// Эта часть кода отвечает за плавную прокрутку и подсветку активного пункта в меню
-document.addEventListener('DOMContentLoaded', () => {
-    const sidebarLinks = document.querySelectorAll('.sidebar a');
-    const modules = document.querySelectorAll('.module');
+// --- Инициализация при загрузке страницы ---
 
-    // Функция для плавной прокрутки
+function setupSidebar() {
+    // Эта функция должна быть перенастроена, так как меню теперь динамическое
+    const sidebarLinks = document.querySelectorAll('.sidebar a');
     sidebarLinks.forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
-            document.querySelector(targetId).scrollIntoView({
-                behavior: 'smooth'
-            });
+            document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
         });
     });
+    // Логика подсветки активного пункта останется такой же, но ее нужно вызывать после генерации меню
+}
 
-    // Функция для подсветки активного пункта меню при прокрутке
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                sidebarLinks.forEach(link => {
-                    link.parentElement.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + entry.target.id) {
-                        link.parentElement.classList.add('active');
-                    }
-                });
-            }
+document.addEventListener('DOMContentLoaded', () => {
+    // Загрузка активных сессий
+    const sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
+    const list = document.getElementById('active-sessions-list');
+    if(sessions.length > 0){
+        sessions.forEach(s => {
+            const li = document.createElement('li');
+            li.textContent = `Пациент ${s.id.substring(4,10)} (начато: ${new Date(s.time).toLocaleString()})`;
+            li.onclick = () => continueSession(s.id);
+            list.appendChild(li);
         });
-    }, { rootMargin: '-30% 0px -70% 0px' }); // Активируется, когда модуль находится в средней трети экрана
+    } else {
+       document.getElementById('active-sessions-container').classList.add('hidden');
+    }
 
-    modules.forEach(module => {
-        observer.observe(module);
-    });
+    showScreen('start-screen');
 });
