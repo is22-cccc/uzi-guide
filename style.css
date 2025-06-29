@@ -175,19 +175,24 @@ body {
     padding-bottom: 1rem;
 }
 
-.step-content {
+/* --- ИСПРАВЛЕННАЯ СТРУКТУРА МАКЕТА --- */
+.module-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     align-items: flex-start;
     margin-top: 1.5rem;
 }
-.sub-module .step-content {
-    grid-template-columns: 1fr 1fr;
+.instructions-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
-
-
-.instructions {
+.instructions-column img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+.calculator-column {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -234,14 +239,23 @@ body {
 .sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
 .sub-module h3 { margin-top: 0; color: var(--accent-hover); grid-column: 1 / -1; }
 
-.placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
-.visualization-element { margin-bottom: 1rem; }
-.visualization-element img { max-width: 100%; border-radius: 8px; }
-.visualization-element.hidden { display: none; }
+/* --- ИСПРАВЛЕНИЕ ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
+.module.no-vis .module-content {
+    grid-template-columns: 1fr; /* Делаем одну колонку */
+}
+.module.no-vis .instructions-column {
+    display: none; /* Полностью скрываем левую колонку с инструкциями */
+}
+.module.no-vis .calculator-column {
+    /* Для правой колонки, которая осталась, можно задать максимальную ширину для эстетики */
+    max-width: 450px;
+    margin: 0 auto; /* Центрируем ее */
+    width: 100%;
+}
 
+.placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
 .final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
 .hidden { display: none !important; }
-
 .previous-value {
     font-size: 0.8em;
     font-weight: 400;
@@ -272,20 +286,6 @@ body {
 }
 #finish-button { background-color: var(--primary-color); }
 
-/* --- НОВЫЙ БЛОК: ИСПРАВЛЕНИЕ МАКЕТА ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
-.module.no-vis .step-content {
-    grid-template-columns: 1fr; /* Делаем одну колонку */
-}
-
-.module.no-vis .instructions {
-    display: none; /* Полностью скрываем левую колонку с инструкциями */
-}
-
-.module.no-vis .visualization {
-    /* Для правой колонки, которая осталась, можно задать максимальную ширину для эстетики */
-    max-width: 450px;
-    margin: 0 auto; /* Центрируем ее */
-}
 
 /* --- АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
 @media (max-width: 992px) {
@@ -316,7 +316,7 @@ body {
     .module {
         padding: 1.5rem;
     }
-    .step-content {
+    .module-content {
         grid-template-columns: 1fr; 
     }
     .sub-module .step-content {
