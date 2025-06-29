@@ -7,149 +7,198 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- ЭКРАН 1: СТАРТОВЫЙ -->
+    <div id="start-screen" class="screen active">
+        <div class="screen-content">
+            <img src="https://i.imgur.com/your-logo-placeholder.png" alt="Логотип ММКЦ" class="logo-placeholder">
+            <h1>УЗИ-мониторинг волемического статуса</h1>
+            <button class="action-button" onclick="startNewSession()">Начать новое обследование</button>
+            <div id="active-sessions-container">
+                <h3>Активные сессии:</h3>
+                <ul id="active-sessions-list">
+                    <!-- Список сессий будет здесь -->
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <header class="main-header">
-        <h1>Ультразвуковой мониторинг волемического статуса</h1>
-        <p class="sub-header">Методическое пособие по принятию клинического решения</p>
-    </header>
+    <!-- ЭКРАН 2: ВЫБОР ПРОТОКОЛА -->
+    <div id="protocol-screen" class="screen">
+        <div class="screen-content">
+            <h2>Шаг 1: Выберите уровень протокола</h2>
+            <button class="choice-button" onclick="selectProtocol('basic')">Базовый</button>
+            <button class="choice-button" onclick="selectProtocol('advanced')">Продвинутый</button>
+            <button class="choice-button" onclick="selectProtocol('expert')">Экспертный</button>
+        </div>
+    </div>
 
-    <main class="content-container">
-        <nav class="sidebar">
-            <h2>Протоколы</h2>
-            <ul>
-                <li><a href="#ijv-module">Внутренняя яремная вена</a></li>
-                <li><a href="#cca-module">Общая сонная артерия</a></li>
-                <li><a href="#brachial-artery-module">Плечевая артерия</a></li>
-                <li><a href="#pa-vti-module">VTI на легочной артерии</a></li>
-                <li><a href="#svc-module">Верхняя полая вена</a></li>
-                <li><a href="#aorta-vti-module">VTI на аорте</a></li>
-                <li><a href="#ivc-subcostal-module">Нижняя полая вена (субкост.)</a></li>
-                <li><a href="#ivc-transhepatic-module">Нижняя полая вена (транспеч.)</a></li>
-            </ul>
-        </nav>
-
-        <div class="modules-wrapper">
-            <!-- ====================================================== -->
-            <!--          МОДУЛЬ 1: ВНУТРЕННЯЯ ЯРЕМНАЯ ВЕНА             -->
-            <!-- ====================================================== -->
-            <section id="ijv-module" class="module">
-                <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
-                <div class="step-content">
-                    <div class="instructions">
-                        <h4>Инструкции</h4>
-                        <ul>
-                            <li>Уложите пациента строго горизонтально и поверните его голову вбок.</li>
-                            <li>Поставьте датчик на переднелатеральную поверхность шеи для визуализации вены и артерии.</li>
-                            <li><strong>Важно:</strong> Не давите на шею при позиционировании датчика.</li>
-                            <li>Включите М-режим и наведите луч на просвет яремной вены в максимальном ее сечении.</li>
-                            <li>Зафиксируйте цикл вдох-выдох и измерьте максимальный и минимальный размер вены.</li>
-                        </ul>
-                        <div class="calculator">
-                            <label for="hmax">Макс. диаметр (Hmax), мм:</label>
-                            <input type="number" id="hmax" placeholder="напр. 15">
-                            <label for="hmin">Мин. диаметр (Hmin), мм:</label>
-                            <input type="number" id="hmin" placeholder="напр. 5">
-                            <button onclick="calculateIJV()">Рассчитать</button>
-                        </div>
-                    </div>
-                    <div id="ijv-result-container" class="visualization result">
-                        <h4>Результат</h4>
-                        <p id="ijv-result-text">Здесь будет результат расчета...</p>
-                        <div id="ijv-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- ====================================================== -->
-            <!--          МОДУЛЬ 2: ОБЩАЯ СОННАЯ АРТЕРИЯ (ОСА)          -->
-            <!-- ====================================================== -->
-            <section id="cca-module" class="module">
-                <h2>Оценка общей сонной артерии (ОСА)</h2>
-                <div class="sub-module">
-                    <h3>Измерение 1: Вариабельность пиковой скорости кровотока (Vpk)</h3>
+    <!-- ЭКРАН 3: ВЫБОР ВИЗУАЛИЗАЦИИ -->
+    <div id="vis-mode-screen" class="screen">
+        <div class="screen-content">
+            <h2>Шаг 2: Выберите режим отображения</h2>
+            <button class="choice-button" onclick="selectVisMode(true)">С визуализацией (для обучения)</button>
+            <button class="choice-button" onclick="selectVisMode(false)">Без визуализации (для экспертов)</button>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН 4: ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <div id="main-workspace" class="screen">
+        <header class="main-header">
+            <h1>Ультразвуковой мониторинг волемического статуса</h1>
+            <p id="session-info" class="sub-header"></p>
+        </header>
+        <main class="content-container">
+            <nav class="sidebar">
+                <h2>Протоколы</h2>
+                <ul id="protocol-menu">
+                    <!-- Меню будет сгенерировано JS -->
+                </ul>
+            </nav>
+            <div class="modules-wrapper">
+                <!-- МОДУЛЬ 1: ВЯВ -->
+                <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
+                    <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
                     <div class="step-content">
                         <div class="instructions">
-                            <h4>Инструкции</h4>
-                            <ul>
-                                <li>Выведите общую сонную артерию в продольной проекции.</li>
-                                <li>Включите режим импульсно-волнового допплера и поместите метку на середину просвета артерии.</li>
-                                <li>На пике вдоха и выдоха измерьте максимальный (Vmax) и минимальный (Vmin) пик скорости.</li>
-                            </ul>
+                            <div class="visualization-element">
+                                <h4>Инструкции и визуализация</h4>
+                                <p>Уложите пациента горизонтально, поверните голову. Поставьте датчик на переднелатеральную поверхность шеи. Не давите.</p>
+                                <img src="https://i.imgur.com/xG4hPAb.png" alt="Схема позиционирования датчика на шее">
+                            </div>
                             <div class="calculator">
-                                <label for="vmax">Vmax, см/с:</label>
-                                <input type="number" id="vmax" placeholder="напр. 100">
-                                <label for="vmin">Vmin, см/с:</label>
-                                <input type="number" id="vmin" placeholder="напр. 85">
-                                <button onclick="calculateCCA_Vpk()">Рассчитать Vpk-вариабельность</button>
+                                <label for="hmax">Макс. диаметр (Hmax), мм:</label>
+                                <input type="number" id="hmax" placeholder="напр. 15">
+                                <label for="hmin">Мин. диаметр (Hmin), мм:</label>
+                                <input type="number" id="hmin" placeholder="напр. 5">
+                                <label for="ijv-tech">Технические сложности:</label>
+                                <select id="ijv-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateIJV()">Рассчитать</button>
                             </div>
                         </div>
-                        <div id="vpk-result-container" class="visualization result">
+                        <div class="visualization result">
+                            <h4>Результат</h4>
+                            <p id="ijv-result-text">...</p>
+                            <div id="ijv-interpretation" class="interpretation-box"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- МОДУЛЬ 2: ОСА -->
+                <section id="cca-module" class="module" data-protocol="basic,advanced,expert">
+                    <h2>Оценка общей сонной артерии (ОСА)</h2>
+                    <div class="sub-module">
+                        <h3>Вариабельность пиковой скорости (Vpk)</h3>
+                        <div class="instructions">
+                            <div class="calculator">
+                                <label for="vmax">Vmax, см/с:</label>
+                                <input type="number" id="vmax" placeholder="100">
+                                <label for="vmin">Vmin, см/с:</label>
+                                <input type="number" id="vmin" placeholder="85">
+                                <label for="vpk-tech">Технические сложности:</label>
+                                <select id="vpk-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateCCA_Vpk()">Рассчитать Vpk</button>
+                            </div>
+                        </div>
+                        <div class="visualization result">
                             <h4>Результат Vpk</h4>
-                            <p id="vpk-result-text">Здесь будет результат расчета...</p>
+                            <p id="vpk-result-text">...</p>
                             <div id="vpk-interpretation" class="interpretation-box"></div>
                         </div>
                     </div>
-                </div>
-                <div class="sub-module">
-                    <h3>Измерение 2: Корректированное время потока (FTc)</h3>
-                    <div class="step-content">
+                    <div class="sub-module">
+                        <h3>Корректированное время потока (FTc)</h3>
                         <div class="instructions">
-                            <h4>Инструкции</h4>
-                            <ul>
-                                <li>На допплеровской кривой измерьте время от начала систолы до ее конца (время потока).</li>
-                                <li>Также зафиксируйте ЧСС пациента.</li>
-                            </ul>
                             <div class="calculator">
                                 <label for="flowTime">Время потока (мс):</label>
-                                <input type="number" id="flowTime" placeholder="напр. 310">
+                                <input type="number" id="flowTime" placeholder="310">
                                 <label for="heartRate">ЧСС (уд/мин):</label>
-                                <input type="number" id="heartRate" placeholder="напр. 80">
+                                <input type="number" id="heartRate" placeholder="80">
+                                <label for="cca-age">Возраст пациента:</label>
+                                <select id="cca-age">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="<65">До 65 лет</option>
+                                    <option value=">=65">65 лет и более</option>
+                                </select>
+                                <label for="ftc-tech">Технические сложности:</label>
+                                <select id="ftc-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
                                 <button onclick="calculateCCA_FTc()">Рассчитать FTc</button>
                             </div>
                         </div>
-                        <div id="ftc-result-container" class="visualization result">
+                         <div class="visualization result">
                             <h4>Результат FTc</h4>
-                            <p id="ftc-result-text">Здесь будет результат расчета...</p>
+                            <p id="ftc-result-text">...</p>
                             <div id="ftc-interpretation" class="interpretation-box"></div>
                         </div>
                     </div>
+                </section>
+                
+                <!-- МОДУЛЬ 3: ПЛЕЧЕВАЯ АРТЕРИЯ -->
+                <section id="brachial-artery-module" class="module" data-protocol="advanced,expert">
+                    <h2>Оценка плечевой артерии</h2>
+                    <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+
+                <!-- ... ДРУГИЕ МОДУЛИ-ЗАГОТОВКИ ... -->
+                <section id="pa-vti-module" class="module" data-protocol="expert">
+                     <h2>Оценка VTI на легочной артерии</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                 
+                <section id="svc-module" class="module" data-protocol="expert">
+                     <h2>Оценка верхней полой вены</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                
+                 <section id="aorta-vti-module" class="module" data-protocol="expert">
+                     <h2>Оценка VTI на аорте</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                
+                 <section id="ivc-subcostal-module" class="module" data-protocol="advanced,expert">
+                     <h2>Оценка нижней полой вены (субкост.)</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+                
+                <section id="ivc-transhepatic-module" class="module" data-protocol="advanced,expert">
+                     <h2>Оценка нижней полой вены (транспеч.)</h2>
+                     <p class="placeholder-text">Модуль в разработке.</p>
+                </section>
+
+                <!-- ИТОГОВЫЙ БЛОК -->
+                <div class="final-actions">
+                    <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
+                    <div id="final-result-section" class="hidden">
+                        <h3>Итоговое заключение</h3>
+                        <div id="final-interpretation" class="interpretation-box"></div>
+                        <div class="form-group">
+                            <label for="clinical-decision">Ваши действия:</label>
+                            <select id="clinical-decision">
+                                <option value="" selected disabled>Выберите...</option>
+                                <option value="Болюс жидкости">Болюс жидкости</option>
+                                <option value="Инотропы">Инотропы</option>
+                                <option value="Вазопрессоры">Вазопрессоры</option>
+                                <option value="Де-эскалационная терапия">Де-эскалационная терапия</option>
+                                <option value="Тактика не изменена">Тактика не изменена</option>
+                            </select>
+                        </div>
+                        <button id="finish-button" class="action-button" onclick="finishSession()">Завершить и сохранить</button>
+                    </div>
                 </div>
-            </section>
-
-            <!-- ====================================================== -->
-            <!--              ЗАГОТОВКИ ДЛЯ БУДУЩИХ МОДУЛЕЙ             -->
-            <!-- ====================================================== -->
-            <section id="brachial-artery-module" class="module placeholder">
-                <h2>Оценка плечевой артерии</h2>
-                <p>Этот модуль находится в разработке.</p>
-            </section>
-            
-            <section id="pa-vti-module" class="module placeholder">
-                <h2>Оценка VTI на легочной артерии</h2>
-                <p>Этот модуль находится в разработке.</p>
-            </section>
-
-            <section id="svc-module" class="module placeholder">
-                <h2>Оценка верхней полой вены</h2>
-                <p>Этот модуль находится в разработке.</p>
-            </section>
-            
-            <section id="aorta-vti-module" class="module placeholder">
-                <h2>Оценка VTI на аорте</h2>
-                <p>Этот модуль находится в разработке.</p>
-            </section>
-            
-            <section id="ivc-subcostal-module" class="module placeholder">
-                <h2>Оценка нижней полой вены (субкостальная позиция)</h2>
-                <p>Этот модуль находится в разработке.</p>
-            </section>
-
-            <section id="ivc-transhepatic-module" class="module placeholder">
-                <h2>Оценка нижней полой вены (транспеченочная позиция)</h2>
-                <p>Этот модуль находится в разработке.</p>
-            </section>
-        </div>
-    </main>
+            </div>
+        </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
