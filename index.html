@@ -59,7 +59,21 @@
                 </ul>
             </nav>
             <div class="modules-wrapper">
-                <!-- МОДУЛЬ 1: ВЯВ -->
+                <!-- БЛОК ДЛЯ ДИНАМИЧЕСКОГО НАБЛЮДЕНИЯ (появляется при продолжении сессии) -->
+                <div id="follow-up-evaluation" class="module hidden">
+                    <h2>Оценка предыдущего шага</h2>
+                    <div class="form-group">
+                        <label for="tactic-evaluation">Совпадение тактики лечения и данных УЗИ на предыдущем шаге:</label>
+                        <select id="tactic-evaluation">
+                            <option value="" selected disabled>Выберите оценку...</option>
+                            <option value="совпало">Тактика соответствовала данным УЗИ</option>
+                            <option value="не совпало">Тактика не соответствовала данным УЗИ</option>
+                            <option value="нет данных">Недостаточно данных для оценки</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- МОДУЛЬ 1: ВЯВ (с исправленным layout) -->
                 <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
                     <div class="step-content">
@@ -70,9 +84,9 @@
                                 <img src="https://i.imgur.com/xG4hPAb.png" alt="[Изображение схемы позиционирования датчика на шее]">
                             </div>
                             <div class="calculator">
-                                <label for="hmax">Макс. диаметр (Hmax), мм:</label>
+                                <label for="hmax">Макс. диаметр (Hmax), мм: <span class="previous-value" id="prev-hmax"></span></label>
                                 <input type="number" id="hmax" placeholder="напр. 15">
-                                <label for="hmin">Мин. диаметр (Hmin), мм:</label>
+                                <label for="hmin">Мин. диаметр (Hmin), мм: <span class="previous-value" id="prev-hmin"></span></label>
                                 <input type="number" id="hmin" placeholder="напр. 5">
                                 <label for="ijv-tech">Технические сложности:</label>
                                 <select id="ijv-tech">
@@ -96,12 +110,12 @@
                     <h2>Оценка общей сонной артерии (ОСА)</h2>
                     <div class="sub-module">
                         <h3>Вариабельность пиковой скорости (Vpk)</h3>
-                        <div class="step-content no-grid">
+                        <div class="step-content">
                             <div class="instructions">
                                 <div class="calculator">
-                                    <label for="vmax">Vmax, см/с:</label>
+                                    <label for="vmax">Vmax, см/с: <span class="previous-value" id="prev-vmax"></span></label>
                                     <input type="number" id="vmax" placeholder="100">
-                                    <label for="vmin">Vmin, см/с:</label>
+                                    <label for="vmin">Vmin, см/с: <span class="previous-value" id="prev-vmin"></span></label>
                                     <input type="number" id="vmin" placeholder="85">
                                     <label for="vpk-tech">Технические сложности:</label>
                                     <select id="vpk-tech">
@@ -121,12 +135,12 @@
                     </div>
                     <div class="sub-module">
                         <h3>Корректированное время потока (FTc)</h3>
-                         <div class="step-content no-grid">
+                         <div class="step-content">
                             <div class="instructions">
                                 <div class="calculator">
-                                    <label for="flowTime">Время потока (мс):</label>
+                                    <label for="flowTime">Время потока (мс): <span class="previous-value" id="prev-flowTime"></span></label>
                                     <input type="number" id="flowTime" placeholder="310">
-                                    <label for="heartRate">ЧСС (уд/мин):</label>
+                                    <label for="heartRate">ЧСС (уд/мин): <span class="previous-value" id="prev-heartRate"></span></label>
                                     <input type="number" id="heartRate" placeholder="80">
                                     <label for="cca-age">Возраст пациента:</label>
                                     <select id="cca-age">
@@ -152,37 +166,33 @@
                     </div>
                 </section>
                 
-                <!-- МОДУЛЬ 3: ПЛЕЧЕВАЯ АРТЕРИЯ -->
+                <!-- ... ДРУГИЕ МОДУЛИ-ЗАГОТОВКИ ... -->
                 <section id="brachial-artery-module" class="module" data-protocol="advanced,expert">
                     <h2>Оценка плечевой артерии</h2>
                     <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
-
                 <section id="ivc-subcostal-module" class="module" data-protocol="advanced,expert">
                      <h2>Нижняя полая вена (субкостально)</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
-                
                 <section id="ivc-transhepatic-module" class="module" data-protocol="advanced,expert">
                      <h2>Нижняя полая вена (транспеченочно)</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
-                
                 <section id="pa-vti-module" class="module" data-protocol="expert">
                      <h2>VTI на легочной артерии</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
-                 
                 <section id="svc-module" class="module" data-protocol="expert">
                      <h2>Верхняя полая вена</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
-                
-                 <section id="aorta-vti-module" class="module" data-protocol="expert">
+                <section id="aorta-vti-module" class="module" data-protocol="expert">
                      <h2>VTI на аорте</h2>
                      <p class="placeholder-text">Модуль в разработке.</p>
                 </section>
 
+                <!-- ИТОГОВЫЙ БЛОК -->
                 <div class="final-actions">
                     <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
                     <div id="final-result-section" class="hidden">
