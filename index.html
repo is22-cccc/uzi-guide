@@ -36,6 +36,16 @@
         </div>
     </div>
 
+    <!-- ЭКРАН 2: ВЫБОР ПРОТОКОЛА -->
+    <div id="protocol-screen" class="screen">
+        <div class="screen-content">
+            <h2>Шаг 1: Выберите уровень протокола</h2>
+            <div class="choice-group" id="protocol-choice">
+                <button class="choice-button" data-value="basic">Базовый</button>
+                <button class="choice-button" data-value="advanced">Продвинутый</button>
+                <button class="choice-button" data-value="expert">Экспертный</button>
+            </div>
+        </div>
         
     </div>    <!-- ЭКРАН 4: ОСНОВНОЙ ИНТЕРФЕЙС -->
     <div id="main-workspace" class="screen">
@@ -71,7 +81,7 @@
                 <!-- МОДУЛЬ 1: ВЯВ -->
                 <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
-                  <div class="step-content">
+                    <div class="step-content">
                         <div class="instructions">
                             <div class="visualization-element">
                                 <h4>Инструкции и визуализация</h4>
@@ -83,6 +93,7 @@
                                 <img src="assets/ijv-animation.gif" alt="Анимация УЗИ яремной вены">
                             </div>
                         </div>
+                        <div class="visualization">
                              <div class="calculator">
                                 <label for="hmax">Макс. диаметр (Hmax), мм: <span class="previous-value" id="prev-hmax"></span></label>
                                 <input type="number" id="hmax" placeholder="напр. 15">
