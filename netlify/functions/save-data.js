@@ -1,5 +1,5 @@
 // Этот код должен находиться в файле: /netlify/functions/save-data.js
-// ФИНАЛЬНАЯ ВЕРСИЯ С ДЕТАЛЬНЫМ ЛОГИРОВАНИЕМ
+// ФИНАЛЬНАЯ ПОЛНАЯ ВЕРСИЯ С ДЕТАЛЬНЫМ ЛОГИРОВАНИЕМ И НОВЫМИ ПОЛЯМИ
 
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
@@ -51,6 +51,8 @@ exports.handler = async (event, context) => {
       isResponsive: data.isResponsive !== undefined ? data.isResponsive.toString() : 'N/A',
       techIssue: data.techIssue || 'N/A',
       finalDecision: data.finalDecision || 'N/A',
+      age: data.age || 'N/A', // Новое поле
+      tacticEvaluation: data.tacticEvaluation || 'N/A' // Новое поле
     });
     console.log("Шаг 6a: Строка успешно добавлена в таблицу!");
 
