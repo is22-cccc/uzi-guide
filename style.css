@@ -1,183 +1,235 @@
-/* Базовые стили */
+/* --- Глобальные переменные --- */
+:root {
+    --primary-color: #01295f; /* Темно-синий */
+    --accent-color: #00a5e5; /* Ярко-голубой */
+    --accent-hover: #008ac7;
+    --success-color: #00b899; /* Зеленый */
+    --bg-light: #f4f7f9;
+    --text-dark: #333;
+    --text-light: #fff;
+    --border-color: #eef2f5;
+    --white: #fff;
+}
+
+/* --- Базовые стили --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
-    background-color: #f4f7f9;
-    color: #333;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
 }
 
+/* --- Стили для экранов выбора --- */
+.screen { display: none; }
+.screen.active { display: block; }
+
+.screen-content {
+    max-width: 700px;
+    margin: 10vh auto;
+    text-align: center;
+    padding: 2rem;
+}
+.screen-content h1, .screen-content h2 { color: var(--primary-color); }
+
+.action-button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    transition: background-color 0.2s;
+}
+.action-button:hover { background-color: var(--accent-hover); }
+
+/* --- Улучшенные кнопки выбора --- */
+.choice-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.choice-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--white);
+    color: var(--primary-color);
+    transition: all 0.2s;
+}
+.choice-button:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+.choice-button.selected {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+
+#active-sessions-container { margin-top: 2rem; text-align: left;}
+#active-sessions-list { list-style: none; padding: 0; }
+#active-sessions-list li {
+    background: var(--white);
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+#active-sessions-list li:hover { 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-color: var(--accent-color);
+}
+
+
+/* --- Стили для основного рабочего пространства --- */
 .main-header {
-    background-color: #01295f; /* Темно-синий, как у mmccdzm.ru */
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-light);
     padding: 1rem 2rem;
     text-align: center;
 }
+.sub-header { font-size: 0.9rem; opacity: 0.8; margin: 0; }
 
 .content-container {
     display: flex;
     margin: 1.5rem;
     gap: 1.5rem;
+    align-items: flex-start;
 }
 
+/* --- Боковое меню --- */
 .sidebar {
     flex: 0 0 250px;
-    background-color: white;
+    background-color: var(--white);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    height: fit-content;
+    position: sticky;
+    top: 1.5rem;
 }
-
 .sidebar h2 {
     font-size: 1.2rem;
-    color: #01295f;
-    border-bottom: 2px solid #eef2f5;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
     margin-top: 0;
 }
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
+.sidebar ul { list-style: none; padding: 0; margin: 0; }
 .sidebar li a {
     text-decoration: none;
-    color: #333;
+    color: var(--text-dark);
     display: block;
     padding: 0.7rem 1rem;
     border-radius: 5px;
     transition: background-color 0.2s ease;
 }
-
-.sidebar li a:hover {
-    background-color: #eef2f5;
-}
-
-.sidebar li.active-protocol a {
-    background-color: #00a5e5; /* Ярко-голубой, как у mmccdzm.ru */
-    color: white;
+.sidebar li a:hover { background-color: var(--border-color); }
+.sidebar li.active a {
+    background-color: var(--accent-color);
+    color: var(--text-light);
     font-weight: bold;
 }
 
-.module {
+/* --- Модули --- */
+.modules-wrapper {
     flex-grow: 1;
-    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.module {
+    background-color: var(--white);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    scroll-margin-top: 1.5rem; /* Для корректной прокрутки */
 }
-
+.module.hidden { display: none; }
 .module h2 {
     margin-top: 0;
-    color: #01295f;
-}
-
-.step {
-    display: none; /* Скрываем все шаги по умолчанию */
-}
-
-.step.active {
-    display: block; /* Показываем только активный шаг */
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
 }
 
 .step-content {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
     margin-top: 1.5rem;
-    border-top: 1px solid #eef2f5;
-    padding-top: 1.5rem;
 }
+.step-content.no-grid { display: contents; }
 
 .instructions {
-    flex-basis: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
-
-.visualization {
-    flex-basis: 50%;
-    text-align: center;
-}
-
-.visualization img {
-    max-width: 100%;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-.caption {
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: 0.5rem;
-}
-
-.button-next {
-    display: inline-block;
-    background-color: #00a5e5;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 1.5rem;
-    transition: background-color 0.2s ease;
-}
-
-.button-next:hover {
-    background-color: #008ac7;
-}
-
-/* Стили для калькулятора */
 .calculator {
-    margin-top: 1rem;
+    padding: 1rem;
+    background: #fdfdfd;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
 }
-
-.calculator label {
-    display: block;
-    margin-top: 0.5rem;
-}
-
-.calculator input {
-    width: 100px;
+.calculator label { display: block; margin-top: 0.7rem; font-weight: 500; }
+.calculator input, .calculator select {
+    width: 100%;
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
 }
-
 .calculator button {
-    display: inline-block;
-    background-color: #00b899; /* Зеленый акцент, как у mmccdzm.ru */
-    color: white;
-    padding: 10px 15px;
+    display: block;
+    background-color: var(--success-color);
+    color: #fff;
+    width: 100%;
+    padding: 12px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-    margin-left: 10px;
+    margin-top: 1.5rem;
 }
 
-.result {
-    padding: 1rem;
-    background-color: #f4f7f9;
-    border-radius: 5px;
-}
-
+.result { padding: 1rem; background-color: var(--bg-light); border-radius: 5px; }
 .interpretation-box {
-    margin-top: 1rem;
-    padding: 1rem;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 1.1rem;
+    margin-top: 1rem; padding: 1rem; border-radius: 5px;
+    font-weight: bold; font-size: 1.1rem; text-align: left;
+    min-height: 50px;
 }
+.interpretation-box.responsive { background-color: #e8f5e9; color: #2e7d32; }
+.interpretation-box.non-responsive { background-color: #fff3e0; color: #e65100; }
+.interpretation-box.neutral { background-color: #eef2f5; color: #546e7a; }
 
-.interpretation-box.responsive {
-    background-color: #e8f5e9; /* Light green */
-    color: #2e7d32;
-}
+.sub-module { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); }
+.sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+.sub-module h3 { margin-top: 0; color: var(--accent-hover); grid-column: 1 / -1; }
 
-.interpretation-box.non-responsive {
-    background-color: #fff3e0; /* Light orange */
-    color: #e65100;
-}
+.placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
+.visualization-element { margin-bottom: 1rem; }
+.visualization-element img { max-width: 100%; border-radius: 8px; }
+.visualization-element.hidden { display: none; }
+
+.final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
+.hidden { display: none !important; }
+
+#final-result-section .form-group { margin: 1.5rem 0; }
+#final-result-section label { font-weight: bold; }
+#final-result-section select { width: 100%; padding: 0.8rem; margin-top: 0.5rem; }
+#finish-button { background-color: var(--primary-color); }
