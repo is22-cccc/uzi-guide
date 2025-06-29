@@ -34,10 +34,11 @@ body {
 }
 .screen-content h1, .screen-content h2 { color: var(--primary-color); }
 
-/* --- НОВЫЙ СТИЛЬ: Логотип на стартовом экране --- */
+/* --- ИСПРАВЛЕННЫЙ СТИЛЬ: Логотип на стартовом экране --- */
 .logo {
-    max-width: 200px;
+    max-width: 250px; /* Увеличим максимальную ширину */
     margin-bottom: 1.5rem;
+    /* Убираем синий фон, так как он часть SVG */
 }
 
 .action-button {
@@ -104,7 +105,7 @@ body {
 
 /* --- Стили для основного рабочего пространства --- */
 
-/* --- ИЗМЕНЕННЫЙ СТИЛЬ: Шапка с логотипом --- */
+/* --- ИСПРАВЛЕННЫЙ СТИЛЬ: Шапка с логотипом --- */
 .main-header {
     background-color: var(--primary-color);
     color: var(--text-light);
@@ -115,7 +116,7 @@ body {
     gap: 1rem;
 }
 .header-logo {
-    height: 40px; /* Фиксированная высота для лого в шапке */
+    height: 35px; /* Немного уменьшим высоту для гармонии */
     width: auto;
 }
 .header-text h1 {
