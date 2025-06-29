@@ -9,65 +9,37 @@
 <body>
 
     <header class="main-header">
-        <h1>УЗИ-мониторинг волемического статуса</h1>
+        <h1>Ультразвуковой мониторинг волемического статуса</h1>
+        [cite_start]<p class="sub-header">Методическое пособие по принятию клинического решения [cite: 1]</p>
     </header>
 
     <main class="content-container">
         <nav class="sidebar">
             <h2>Протоколы</h2>
             <ul>
-                <li class="active-protocol"><a href="#">Внутренняя яремная вена</a></li>
-                <li><a href="#">Общая сонная артерия</a></li>
-                </ul>
+                <li><a href="#ijv-module">Внутренняя яремная вена</a></li>
+                <li><a href="#cca-module">Общая сонная артерия</a></li>
+                <li><a href="#brachial-artery-module">Плечевая артерия</a></li>
+                <li><a href="#pa-vti-module">VTI на легочной артерии</a></li>
+                <li><a href="#svc-module">Верхняя полая вена</a></li>
+                <li><a href="#aorta-vti-module">VTI на аорте</a></li>
+                <li><a href="#ivc-subcostal-module">Нижняя полая вена (субкост.)</a></li>
+                <li><a href="#ivc-transhepatic-module">Нижняя полая вена (транспеч.)</a></li>
+            </ul>
         </nav>
 
-        <section id="ijv-module" class="module">
-            <h2>Оценка вариабельности внутренней яремной вены (ВЯВ)</h2>
-
-            <div id="step1" class="step active">
-                <h3>Шаг 1: Подготовка и позиционирование</h3>
+        <div class="modules-wrapper">
+            <section id="ijv-module" class="module">
+                <h2>Оценка внутренней яремной вены (ВЯВ)</h2>
                 <div class="step-content">
                     <div class="instructions">
                         <h4>Инструкции</h4>
                         <ul>
                             [cite_start]<li>Уложите пациента строго горизонтально и поверните его голову вбок. [cite: 15]</li>
-                            [cite_start]<li>Поставьте датчик на переднелатеральную поверхность шеи. [cite: 15]</li>
+                            [cite_start]<li>Поставьте датчик на переднелатеральную поверхность шеи для визуализации вены и артерии. [cite: 15]</li>
                             [cite_start]<li><strong>Важно:</strong> Не давите на шею при позиционировании датчика. [cite: 17]</li>
-                            [cite_start]<li>Используйте достаточное количество геля. [cite: 13]</li>
-                        </ul>
-                    </div>
-                    <div class="visualization">
-                        <img src="https://i.imgur.com/xG4hPAb.png" alt="Схема позиционирования датчика на шее">
-                        <p class="caption">Зона установки датчика</p>
-                    </div>
-                </div>
-                <button class="button-next" onclick="goToStep(2)">Далее: Визуализация</button>
-            </div>
-
-            <div id="step2" class="step">
-                <h3>Шаг 2: Визуализация и получение изображения</h3>
-                 <div class="step-content">
-                    <div class="instructions">
-                        <h4>Что искать на экране</h4>
-                        [cite_start]<p>Визуализируйте ВЯВ и сонную артерию в поперечной проекции. [cite: 15] ВЯВ будет овальной и будет изменять свой диаметр при дыхании.</p>
-                    </div>
-                    <div class="visualization">
-                        <img src="https://i.imgur.com/8f1yD4Z.gif" alt="Анимация УЗИ яремной вены и сонной артерии">
-                        <p class="caption">Анимированный пример УЗИ-изображения</p>
-                    </div>
-                </div>
-                <button class="button-next" onclick="goToStep(3)">Далее: Измерение</button>
-            </div>
-
-            <div id="step3" class="step">
-                <h3>Шаг 3: Измерение и расчет</h3>
-                <div class="step-content">
-                    <div class="instructions">
-                        <h4>Проведение измерения</h4>
-                         <ul>
-                            [cite_start]<li>Включите М-режим и наведите луч на просвет яремной вены. [cite: 21]</li>
-                            [cite_start]<li>Зафиксируйте цикл вдох-выдох и нажмите Freeze. [cite: 22]</li>
-                             <li><strong>Задание:</strong> Введите максимальный (на выдохе) и минимальный (на вдохе) диаметр вены в поля ниже.</li>
+                            [cite_start]<li>Включите М-режим и наведите луч на просвет яремной вены в максимальном ее сечении. [cite: 21]</li>
+                            [cite_start]<li>Зафиксируйте цикл вдох-выдох и измерьте максимальный и минимальный размер вены. [cite: 22, 23]</li>
                         </ul>
                         <div class="calculator">
                             <label for="hmax">Макс. диаметр (Hmax), мм:</label>
@@ -77,15 +49,97 @@
                             <button onclick="calculateIJV()">Рассчитать</button>
                         </div>
                     </div>
-                    <div id="result-container" class="visualization result">
+                    <div id="ijv-result-container" class="visualization result">
                         <h4>Результат</h4>
-                        <p id="result-text">Здесь будет результат расчета...</p>
-                        <div id="interpretation" class="interpretation-box"></div>
+                        <p id="ijv-result-text">Здесь будет результат расчета...</p>
+                        <div id="ijv-interpretation" class="interpretation-box"></div>
                     </div>
                 </div>
-                 <button class="button-next" onclick="goToStep(1)">Начать заново</button>
-            </div>
-        </section>
+            </section>
+            
+            <section id="cca-module" class="module">
+                <h2>Оценка общей сонной артерии (ОСА)</h2>
+                <div class="sub-module">
+                    <h3>Измерение 1: Вариабельность пиковой скорости кровотока (Vpk)</h3>
+                    <div class="step-content">
+                        <div class="instructions">
+                            <h4>Инструкции</h4>
+                            <ul>
+                                [cite_start]<li>Выведите общую сонную артерию в продольной проекции. [cite: 30]</li>
+                                [cite_start]<li>Включите режим импульсно-волнового допплера и поместите метку на середину просвета артерии. [cite: 34]</li>
+                                [cite_start]<li>На пике вдоха и выдоха измерьте максимальный (Vmax) и минимальный (Vmin) пик скорости. [cite: 41]</li>
+                            </ul>
+                            <div class="calculator">
+                                <label for="vmax">Vmax, см/с:</label>
+                                <input type="number" id="vmax" placeholder="напр. 100">
+                                <label for="vmin">Vmin, см/с:</label>
+                                <input type="number" id="vmin" placeholder="напр. 85">
+                                <button onclick="calculateCCA_Vpk()">Рассчитать Vpk-вариабельность</button>
+                            </div>
+                        </div>
+                        <div id="vpk-result-container" class="visualization result">
+                            <h4>Результат Vpk</h4>
+                            <p id="vpk-result-text">Здесь будет результат расчета...</p>
+                            <div id="vpk-interpretation" class="interpretation-box"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-module">
+                    <h3>Измерение 2: Корректированное время потока (FTc)</h3>
+                    <div class="step-content">
+                        <div class="instructions">
+                            <h4>Инструкции</h4>
+                            <ul>
+                                [cite_start]<li>На допплеровской кривой измерьте время от начала систолы до ее конца (время потока). [cite: 50]</li>
+                                <li>Также зафиксируйте ЧСС пациента.</li>
+                            </ul>
+                            <div class="calculator">
+                                <label for="flowTime">Время потока (мс):</label>
+                                <input type="number" id="flowTime" placeholder="напр. 310">
+                                <label for="heartRate">ЧСС (уд/мин):</label>
+                                <input type="number" id="heartRate" placeholder="напр. 80">
+                                <button onclick="calculateCCA_FTc()">Рассчитать FTc</button>
+                            </div>
+                        </div>
+                        <div id="ftc-result-container" class="visualization result">
+                            <h4>Результат FTc</h4>
+                            <p id="ftc-result-text">Здесь будет результат расчета...</p>
+                            <div id="ftc-interpretation" class="interpretation-box"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="brachial-artery-module" class="module placeholder">
+                <h2>Оценка плечевой артерии</h2>
+                <p>Этот модуль находится в разработке.</p>
+            </section>
+            
+            <section id="pa-vti-module" class="module placeholder">
+                <h2>Оценка VTI на легочной артерии</h2>
+                <p>Этот модуль находится в разработке.</p>
+            </section>
+
+            <section id="svc-module" class="module placeholder">
+                <h2>Оценка верхней полой вены</h2>
+                <p>Этот модуль находится в разработке.</p>
+            </section>
+            
+            <section id="aorta-vti-module" class="module placeholder">
+                <h2>Оценка VTI на аорте</h2>
+                <p>Этот модуль находится в разработке.</p>
+            </section>
+            
+            <section id="ivc-subcostal-module" class="module placeholder">
+                <h2>Оценка нижней полой вены (субкостальная позиция)</h2>
+                <p>Этот модуль находится в разработке.</p>
+            </section>
+
+            <section id="ivc-transhepatic-module" class="module placeholder">
+                <h2>Оценка нижней полой вены (транспеченочная позиция)</h2>
+                <p>Этот модуль находится в разработке.</p>
+            </section>
+        </div>
     </main>
 
     <script src="script.js"></script>
