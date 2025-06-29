@@ -22,40 +22,71 @@ function setupChoiceButtons(groupId, callback) {
         if (e.target.classList.contains('choice-button')) {
             group.querySelectorAll('.choice-button').forEach(btn => btn.classList.remove('selected'));
             e.target.classList.add('selected');
+            // Передаем значение из data-атрибута в колбэк
             callback(e.target.dataset.value);
         }
     });
 }
 
+// --- ИСПРАВЛЕННАЯ ЛОГИКА СЕССИЙ ---
+
+// Вызывается ТОЛЬКО при нажатии "Начать новое обследование"
 function startNewSession() {
+    // 1. Устанавливаем ID исследователя
     const researcherId = localStorage.getItem('researcherId') || `res-${crypto.randomUUID()}`;
     localStorage.setItem('researcherId', researcherId);
     
+    // 2. Создаем НОВЫЙ ID пациента
     currentSession.researcherId = researcherId;
     currentSession.patientId = `pat-${crypto.randomUUID()}`;
     currentSession.startTime = new Date().toISOString();
     
+    // 3. Сохраняем новую сессию в список активных
     let sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
-    sessions.push({id: currentSession.patientId, time: currentSession.startTime});
+    // Добавляем в начало списка для удобства
+    sessions.unshift({ id: currentSession.patientId, time: currentSession.startTime });
     localStorage.setItem('activeSessions', JSON.stringify(sessions));
 
+    // 4. Переходим к следующему экрану
     showScreen('protocol-screen');
 }
 
+// Вызывается ТОЛЬКО при клике на существующую сессию в списке
 function continueSession(sessionId) {
-    alert(`Продолжение сессии ${sessionId}. В данной версии все равно начнется новое обследование.`);
-    startNewSession(); // В будущем здесь будет логика загрузки сессии
+    console.log(`Продолжение сессии для пациента: ${sessionId}`);
+    
+    // 1. Устанавливаем ID исследователя
+    const researcherId = localStorage.getItem('researcherId');
+    if (!researcherId) {
+        // На случай, если localStorage был очищен, но сессии остались. Создаем новый ID.
+        const newResearcherId = `res-${crypto.randomUUID()}`;
+        localStorage.setItem('researcherId', newResearcherId);
+        currentSession.researcherId = newResearcherId;
+    } else {
+        currentSession.researcherId = researcherId;
+    }
+
+    // 2. Устанавливаем СУЩЕСТВУЮЩИЙ ID пациента
+    currentSession.patientId = sessionId;
+    
+    // 3. Сбрасываем предыдущие измерения для чистоты (в будущем здесь будет загрузка)
+    currentSession.measurements = {};
+    currentSession.finalDecision = null;
+
+    // 4. Переходим к следующему экрану
+    showScreen('protocol-screen');
 }
+
 
 function selectProtocol(protocolName) {
     currentSession.protocol = protocolName;
     setTimeout(() => {
         showScreen('vis-mode-screen');
-    }, 300); // Небольшая задержка для визуального эффекта
+    }, 300); 
 }
 
 function selectVisMode(mode) {
-    currentSession.visMode = (mode === 'true'); // Конвертируем строку в boolean
+    currentSession.visMode = (mode === 'true');
     setTimeout(() => {
         applySessionSettings();
         showScreen('main-workspace');
@@ -63,26 +94,23 @@ function selectVisMode(mode) {
 }
 
 function applySessionSettings() {
-    // 1. Показываем/скрываем модули в зависимости от протокола
     document.querySelectorAll('.module').forEach(module => {
         const protocols = module.dataset.protocol.split(',');
-        if (protocols.includes(currentSession.protocol)) {
-            module.classList.remove('hidden');
-        } else {
-            module.classList.add('hidden');
-        }
+        module.classList.toggle('hidden', !protocols.includes(currentSession.protocol));
     });
 
-    // 2. Показываем/скрываем элементы визуализации
     document.querySelectorAll('.visualization-element').forEach(el => {
         el.classList.toggle('hidden', !currentSession.visMode);
     });
 
-    // 3. Генерируем меню
     generateProtocolMenu();
     
-    // 4. Отображаем инфо о сессии
-    document.getElementById('session-info').innerText = `Сессия: ${currentSession.patientId.substring(4, 10)} | Протокол: ${currentSession.protocol}`;
+    const protocolText = {
+        'basic': 'Базовый',
+        'advanced': 'Продвинутый',
+        'expert': 'Экспертный'
+    };
+    document.getElementById('session-info').innerText = `Сессия: ${currentSession.patientId.substring(4, 10)} | Протокол: ${protocolText[currentSession.protocol]}`;
 }
 
 function generateProtocolMenu() {
@@ -99,7 +127,7 @@ function generateProtocolMenu() {
     setupSidebarScroll(); 
 }
 
-// --- Функции-калькуляторы ---
+// --- Функции-калькуляторы (без изменений) ---
 
 function calculateIJV() {
     const hmax = document.getElementById('hmax').value;
@@ -175,7 +203,7 @@ function calculateCCA_FTc() {
     saveMeasurement('cca_ftc', { flowTime, heartRate, age, tech, ftc, responsive });
 }
 
-// --- Итоговые функции и сбор данных ---
+// --- Итоговые функции и сбор данных (без изменений) ---
 
 function generateFinalReport() {
     let responsiveCount = 0;
@@ -209,7 +237,9 @@ function generateFinalReport() {
 
     if (techIssues) {
         reportText += ' ВНИМАНИЕ: при проведении измерений были зафиксированы технические сложности, что может влиять на достоверность заключения.';
-        finalBox.classList.add('non-responsive'); // Делаем его красным при тех.сложностях
+        if(!finalBox.classList.contains('responsive')) { // Не делаем красным, если и так responsive
+             finalBox.classList.add('non-responsive');
+        }
     }
     
     finalBox.innerText = reportText;
@@ -223,7 +253,10 @@ function finishSession(){
         return;
     }
     currentSession.finalDecision = decision;
-    sendDataToGoogleSheet(currentSession);
+    sendDataToGoogleSheet({
+        type: 'final_report',
+        ...currentSession
+    });
     alert('Сессия завершена. Данные сохранены (выведены в консоль). Перезагрузка...');
     window.location.reload();
 }
@@ -234,6 +267,7 @@ function saveMeasurement(type, data) {
         type: `measurement_${type}`,
         timestamp: new Date().toISOString(),
         sessionId: currentSession.patientId,
+        researcherId: currentSession.researcherId,
         data: data
     });
 }
@@ -241,14 +275,13 @@ function saveMeasurement(type, data) {
 function sendDataToGoogleSheet(data) {
     console.log("--- ДАННЫЕ ДЛЯ ОТПРАВКИ ---");
     console.log(JSON.stringify(data, null, 2));
-    // В будущем здесь будет fetch-запрос на серверный обработчик
 }
 
 // --- Инициализация при загрузке страницы ---
 
 function setupSidebarScroll() {
     const sidebarLinks = document.querySelectorAll('.sidebar a');
-    const modules = document.querySelectorAll('.module');
+    const modules = document.querySelectorAll('.module:not(.hidden)');
 
     sidebarLinks.forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -256,6 +289,8 @@ function setupSidebarScroll() {
             document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
         });
     });
+
+    if(modules.length === 0) return;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -274,22 +309,23 @@ function setupSidebarScroll() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Настройка кнопок выбора
     setupChoiceButtons('protocol-choice', selectProtocol);
     setupChoiceButtons('vis-mode-choice', selectVisMode);
 
-    // Загрузка активных сессий
     const sessions = JSON.parse(localStorage.getItem('activeSessions')) || [];
+    const container = document.getElementById('active-sessions-container');
     const list = document.getElementById('active-sessions-list');
-    if(sessions.length > 0){
+    
+    if (sessions.length > 0) {
         sessions.forEach(s => {
             const li = document.createElement('li');
-            li.textContent = `Пациент ${s.id.substring(4,10)} (начато: ${new Date(s.time).toLocaleString()})`;
+            li.textContent = `Пациент ${s.id.substring(4, 10)} (начато: ${new Date(s.time).toLocaleString()})`;
             li.onclick = () => continueSession(s.id);
             list.appendChild(li);
         });
+        container.classList.remove('hidden');
     } else {
-       document.getElementById('active-sessions-container').classList.add('hidden');
+       container.classList.add('hidden');
     }
 
     showScreen('start-screen');
