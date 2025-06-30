@@ -1,124 +1,102 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивное руководство по УЗИ</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивное руководство по УЗИ</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ЭКРАН 1: СТАРТОВЫЙ -->
-    <div id="start-screen" class="screen active">
-        <div class="screen-content">
-            <!-- Используется оригинальный логотип, который вы загружали -->
-            <img src="assets/logo.svg" alt="Логотип ММКЦ Коммунарка" class="logo">
-            <h1>УЗИ-мониторинг волемического статуса</h1>
-            <p>Добро пожаловать в интерактивное руководство.</p>
-            <button class="action-button" onclick="startNewSession()">Начать новое обследование</button>
-            <div id="active-sessions-container">
-                <h3>Активные сессии:</h3>
-                <ul id="active-sessions-list">
-                    <!-- Список сессий будет генерироваться JS -->
-                </ul>
-            </div>
-        </div>
-    </div>
+        <div id="start-screen" class="screen active">
+        <div class="screen-content">
+            <img src="assets/logo.svg" alt="Логотип ММКЦ Коммунарка" class="logo">
+            <h1>УЗИ-мониторинг волемического статуса</h1>
+            <p>Добро пожаловать в интерактивное руководство.</p>
+            <button class="action-button" onclick="startNewSession()">Начать новое обследование</button>
+            <div id="active-sessions-container">
+                <h3>Активные сессии:</h3>
+                <ul id="active-sessions-list">
+                                    </ul>
+            </div>
+        </div>
+    </div>
 
-    <!-- ЭКРАН 2: ВЫБОР ПРОТОКОЛА -->
-    <div id="protocol-screen" class="screen">
-        <div class="screen-content">
-            <h2>Шаг 1: Выберите уровень протокола</h2>
-            <div class="choice-group" id="protocol-choice">
-                <button class="choice-button" data-value="basic">Базовый</button>
-                <button class="choice-button" data-value="advanced">Продвинутый</button>
-                <button class="choice-button" data-value="expert">Экспертный</button>
-            </div>
-        </div>
-    </div>
+        <div id="protocol-screen" class="screen">
+        <div class="screen-content">
+            <h2>Шаг 1: Выберите уровень протокола</h2>
+            <div class="choice-group" id="protocol-choice">
+                <button class="choice-button" data-value="basic">Базовый</button>
+                <button class="choice-button" data-value="advanced">Продвинутый</button>
+                <button class="choice-button" data-value="expert">Экспертный</button>
+            </div>
+        </div>
+    </div>
+    
+        <div id="main-workspace" class="screen">
+        <header class="main-header">
+            <div class="header-text">
+                <h1>Ультразвуковой мониторинг волемического статуса</h1>
+                <p id="session-info" class="sub-header"></p>
+            </div>
+        </header>
+        <main class="content-container">
+            <nav class="sidebar">
+                <h2>Протоколы</h2>
+                <ul id="protocol-menu">
+                                    </ul>
+            </nav>
+            <div class="modules-wrapper">
+                                <div id="follow-up-evaluation" class="module hidden">
+                    <h2>Оценка предыдущего шага</h2>
+                    <div class="form-group">
+                        <label for="tactic-evaluation">Соответствие тактики лечения и данных УЗИ на предыдущем шаге:</label>
+                        <select id="tactic-evaluation">
+                            <option value="" selected disabled>Выберите оценку...</option>
+                            <option value="совпало">Тактика соответствовала данным УЗИ</option>
+                            <option value="не совпало">Тактика не соответствовала данным УЗИ</option>
+                            <option value="нет данных">Недостаточно данных для оценки</option>
+                        </select>
+                    </div>
+                </div>
 
-    <!-- ЭКРАН 2: ВЫБОР ПРОТОКОЛА -->
-    <div id="protocol-screen" class="screen">
-        <div class="screen-content">
-            <h2>Шаг 1: Выберите уровень протокола</h2>
-            <div class="choice-group" id="protocol-choice">
-                <button class="choice-button" data-value="basic">Базовый</button>
-                <button class="choice-button" data-value="advanced">Продвинутый</button>
-                <button class="choice-button" data-value="expert">Экспертный</button>
-            </div>
-        </div>
-        
-    </div>    <!-- ЭКРАН 4: ОСНОВНОЙ ИНТЕРФЕЙС -->
-    <div id="main-workspace" class="screen">
-        <header class="main-header">
-            <!-- ЛОГОТИП ОТСЮДА ПОЛНОСТЬЮ УБРАН -->
-            <div class="header-text">
-                <h1>Ультразвуковой мониторинг волемического статуса</h1>
-                <p id="session-info" class="sub-header"></p>
-            </div>
-        </header>
-        <main class="content-container">
-            <nav class="sidebar">
-                <h2>Протоколы</h2>
-                <ul id="protocol-menu">
-                    <!-- Меню будет сгенерировано JS -->
-                </ul>
-            </nav>
-            <div class="modules-wrapper">
-                <!-- БЛОК ДЛЯ ДИНАМИЧЕСКОГО НАБЛЮДЕНИЯ -->
-                <div id="follow-up-evaluation" class="module hidden">
-                    <h2>Оценка предыдущего шага</h2>
-                    <div class="form-group">
-                        <label for="tactic-evaluation">Соответствие тактики лечения и данных УЗИ на предыдущем шаге:</label>
-                        <select id="tactic-evaluation">
-                            <option value="" selected disabled>Выберите оценку...</option>
-                            <option value="совпало">Тактика соответствовала данным УЗИ</option>
-                            <option value="не совпало">Тактика не соответствовала данным УЗИ</option>
-                            <option value="нет данных">Недостаточно данных для оценки</option>
-                        </select>
+                                <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
+                    <h2>Оценка внутренней яремной вены при дыхании (ВЯВ)</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="hmax">Макс. диаметр (Hmax), мм: <span class="previous-value" id="prev-hmax"></span></label>
+                                <input type="number" id="hmax" placeholder="напр. 15">
+                                <label for="hmin">Мин. диаметр (Hmin), мм: <span class="previous-value" id="prev-hmin"></span></label>
+                                <input type="number" id="hmin" placeholder="напр. 5">
+                                <label for="ijv-ventilation">Дыхание пациента:</label>
+                                <select id="ijv-ventilation">
+                                    <option value="" disabled selected>Выберите режим...</option>
+                                    <option value="spontaneous">Спонтанное</option>
+                                    <option value="mechanical">ИВЛ</option>
+                                </select>
+                                <label for="ijv-tech">Технические сложности:</label>
+                                <select id="ijv-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateIJV()">Рассчитать</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="ijv-result-text">...</p>
+                                <div id="ijv-interpretation" class="interpretation-box"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <!-- МОДУЛЬ 1: ВЯВ -->
-                <section id="ijv-module" class="module" data-protocol="basic,advanced,expert">
-    <h2>Оценка внутренней яремной вены при дыхании (ВЯВ)</h2>
-    <div class="step-content">
-        <div class="visualization">
-            <div class="calculator">
-                <label for="hmax">Макс. диаметр (Hmax), мм: <span class="previous-value" id="prev-hmax"></span></label>
-                <input type="number" id="hmax" placeholder="напр. 15">
-                <label for="hmin">Мин. диаметр (Hmin), мм: <span class="previous-value" id="prev-hmin"></span></label>
-                <input type="number" id="hmin" placeholder="напр. 5">
-
-                <label for="ijv-ventilation">Дыхание пациента:</label>
-                <select id="ijv-ventilation">
-    <option value="" disabled selected>Выберите режим...</option>
-    <option value="spontaneous">Спонтанное</option>
-    <option value="mechanical">ИВЛ</option>
-</select>
-                <label for="ijv-tech">Технические сложности:</label>
-                <select id="ijv-tech">
-                    <option value="" selected disabled>Выберите...</option>
-                    <option value="нет">Нет</option>
-                    <option value="да">Да</option>
-                </select>
-                <button onclick="calculateIJV()">Рассчитать</button>
-            </div>
-            <div class="result">
-                <h4>Результат</h4>
-                <p id="ijv-result-text">...</p>
-                <div id="ijv-interpretation" class="interpretation-box"></div>
-            </div>
-        </div>
-    </div>
-</section>
-                
-                <!-- МОДУЛЬ 2: ОСА -->
-                <section id="cca-module" class="module" data-protocol="basic,advanced,expert">
+                </section>
+                
+                                <section id="cca-module" class="module" data-protocol="basic,advanced,expert">
                     <h2>Оценка общей сонной артерии при дыхании (ОСА)</h2>
                     <div class="sub-module">
                         <h3>Вариабельность пиковой скорости (Vpk)</h3>
                         <div class="step-content">
-                            <div class="instructions">
+                            <div class="visualization">
                                 <div class="calculator">
                                     <label for="vmax">Vmax, см/с: <span class="previous-value" id="prev-vmax"></span></label>
                                     <input type="number" id="vmax" placeholder="100">
@@ -132,18 +110,18 @@
                                     </select>
                                     <button onclick="calculateCCA_Vpk()">Рассчитать Vpk</button>
                                 </div>
-                            </div>
-                            <div class="visualization result">
-                                <h4>Результат Vpk</h4>
-                                <p id="vpk-result-text">...</p>
-                                <div id="vpk-interpretation" class="interpretation-box"></div>
+                                <div class="result">
+                                    <h4>Результат Vpk</h4>
+                                    <p id="vpk-result-text">...</p>
+                                    <div id="vpk-interpretation" class="interpretation-box"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="sub-module">
                         <h3>Корректированное время потока (FTc)</h3>
-                         <div class="step-content">
-                            <div class="instructions">
+                        <div class="step-content">
+                            <div class="visualization">
                                 <div class="calculator">
                                     <label for="flowTime">Время потока (мс): <span class="previous-value" id="prev-flowTime"></span></label>
                                     <input type="number" id="flowTime" placeholder="310">
@@ -163,242 +141,206 @@
                                     </select>
                                     <button onclick="calculateCCA_FTc()">Рассчитать FTc</button>
                                 </div>
-                            </div>
-                            <div class="visualization result">
-                                <h4>Результат FTc</h4>
-                                <p id="ftc-result-text">...</p>
-                                <div id="ftc-interpretation" class="interpretation-box"></div>
+                                <div class="result">
+                                    <h4>Результат FTc</h4>
+                                    <p id="ftc-result-text">...</p>
+                                    <div id="ftc-interpretation" class="interpretation-box"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                
-        <section id="brachial-artery-module" class="module" data-protocol="advanced,expert">
-            <h2>Оценка плечевой артерии при дыхании </h2>
-            <div class="step-content">
-                <div class="instructions">
-                </div>
-                <div class="visualization">
-                    <div class="calculator">
-                        <label for="brachial-vmax">Vmax, см/с: <span class="previous-value" id="prev-brachial-vmax"></span></label>
-<input type="number" id="brachial-vmax" placeholder="напр. 80">
-<label for="brachial-vmin">Vmin, см/с: <span class="previous-value" id="prev-brachial-vmin"></span></label>
-<input type="number" id="brachial-vmin" placeholder="напр. 70">
-                        <label for="brachial-tech">Технические сложности:</label>
-                        <select id="brachial-tech">
-                            <option value="" selected disabled>Выберите...</option>
-                            <option value="нет">Нет</option>
-                            <option value="да">Да</option>
-                        </select>
-                        <button onclick="calculateBrachialVpk()">Рассчитать вариабельность Vpk</button>
-                    </div>
-                    <div class="result">
-                        <h4>Результат</h4>
-                        <p id="brachial-vpk-result-text">...</p>
-                        <div id="brachial-vpk-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="ivc-subcostal-module" class="module" data-protocol="advanced,expert">
-            <h2>Нижняя полая вена при дыхании (субкостально)</h2>
-            <div class="step-content">
-                <div class="instructions">
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="calculator">
-                       <label for="ivc-sub-dmax">Макс. диаметр (Dmax), мм: <span class="previous-value" id="prev-ivc-sub-dmax"></span></label>
-<input type="number" id="ivc-sub-dmax" placeholder="напр. 21">
-<label for="ivc-sub-dmin">Мин. диаметр (Dmin), мм: <span class="previous-value" id="prev-ivc-sub-dmin"></span></label>
-<input type="number" id="ivc-sub-dmin" placeholder="напр. 10">
-                        <label for="ivc-sub-ventilation">Дыхание пациента:</label>
-                        <select id="ivc-sub-ventilation">
-    <option value="" disabled selected>Выберите режим...</option>
-    <option value="spontaneous">Спонтанное</option>
-    <option value="mechanical">ИВЛ</option>
-</select>
-                        <label for="ivc-sub-tech">Технические сложности:</label>
-                        <select id="ivc-sub-tech">
-                            <option value="" selected disabled>Выберите...</option>
-                            <option value="нет">Нет</option>
-                            <option value="да">Да</option>
-                        </select>
-                        <button onclick="calculateIVCSubcostal()">Рассчитать индекс коллабирования</button>
-                    </div>
-                    <div class="result">
-                        <h4>Результат</h4>
-                        <p id="ivc-sub-result-text">...</p>
-                        <div id="ivc-sub-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="ivc-transhepatic-module" class="module" data-protocol="advanced,expert">
-            <h2>Нижняя полая вена при дыхании (транспеченочно)</h2>
-             <div class="step-content">
-                <div class="instructions">
-                    <div class="visualization-element">
-                        <h4>Инструкции и визуализация</h4>
-                        <p>Доступ через правое межреберье по средне-ключичной линии. Паренхима печени используется как акустическое окно.</p>
-                        <img src="assets/ivc-transhepatic-schema.png" alt="Схема транспеченочного доступа к НПВ">
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="calculator">
-                        <label for="ivc-trans-dmax">Макс. диаметр (Dmax), мм: <span class="previous-value" id="prev-ivc-trans-dmax"></span></label>
-<input type="number" id="ivc-trans-dmax" placeholder="напр. 21">
-<label for="ivc-trans-dmin">Мин. диаметр (Dmin), мм: <span class="previous-value" id="prev-ivc-trans-dmin"></span></label>
-<input type="number" id="ivc-trans-dmin" placeholder="напр. 11">
-                         <label for="ivc-trans-ventilation">Дыхание пациента:</label>
-                        <select id="ivc-trans-ventilation">
-    <option value="" disabled selected>Выберите режим...</option>
-    <option value="spontaneous">Спонтанное</option>
-    <option value="mechanical">ИВЛ</option>
-</select>
-                        <label for="ivc-trans-tech">Технические сложности:</label>
-                        <select id="ivc-trans-tech">
-                            <option value="" selected disabled>Выберите...</option>
-                            <option value="нет">Нет</option>
-                            <option value="да">Да</option>
-                        </select>
-                        <button onclick="calculateIVCTranshepatic()">Рассчитать индекс коллабирования</button>
-                    </div>
-                    <div class="result">
-                        <h4>Результат</h4>
-                        <p id="ivc-trans-result-text">...</p>
-                        <div id="ivc-trans-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="pa-vti-module" class="module" data-protocol="expert">
-            <h2>VTI на легочной артерии при дыхании</h2>
-             <div class="step-content">
-                <div class="instructions">
-                     <div class="visualization-element">
-                        <h4>Инструкции и визуализация</h4>
-                        <p>Парастернальный доступ по короткой оси.</p>
-                        <img src="assets/pa-vti-schema.png" alt="Схема измерения VTI на ЛА">
-                        
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="calculator">
-                       <label for="pa-vti-before">VTI макс, см: <span class="previous-value" id="prev-pa-vti-before"></span></label>
-<input type="number" id="pa-vti-before" placeholder="напр. 15">
-<label for="pa-vti-after">VTI мин, см: <span class="previous-value" id="prev-pa-vti-after"></span></label>
-<input type="number" id="pa-vti-after" placeholder="напр. 18">
-                        <label for="pa-vti-tech">Технические сложности:</label>
-                        <select id="pa-vti-tech">
-                            <option value="" selected disabled>Выберите...</option>
-                            <option value="нет">Нет</option>
-                            <option value="да">Да</option>
-                        </select>
-                        <button onclick="calculatePAVTI()">Рассчитать вариабельность VTI</button>
-                    </div>
-                    <div class="result">
-                        <h4>Результат</h4>
-                        <p id="pa-vti-result-text">...</p>
-                        <div id="pa-vti-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="svc-module" class="module" data-protocol="expert">
-            <h2>Верхняя полая вена при дыхании</h2>
-            <div class="step-content">
-                <div class="instructions">
-                     <div class="visualization-element">
-                        <h4>Инструкции и визуализация</h4>
-                        <p>Визуализируйте ВПВ в продольном сечении. Оцените вариабельность диаметра на дыхательном цикле.</p>
-                       
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="calculator">
-                       <label for="svc-dmax">Макс. диаметр (Dmax), мм: <span class="previous-value" id="prev-svc-dmax"></span></label>
-<input type="number" id="svc-dmax" placeholder="напр. 18">
-<label for="svc-dmin">Мин. диаметр (Dmin), мм: <span class="previous-value" id="prev-svc-dmin"></span></label>
-<input type="number" id="svc-dmin" placeholder="напр. 10">
-                        <label for="svc-tech">Технические сложности:</label>
-                        <select id="svc-tech">
-                            <option value="" selected disabled>Выберите...</option>
-                            <option value="нет">Нет</option>
-                            <option value="да">Да</option>
-                        </select>
-                        <button onclick="calculateSVC()">Рассчитать индекс коллабирования</button>
-                    </div>
-                    <div class="result">
-                        <h4>Результат</h4>
-                        <p id="svc-result-text">...</p>
-                        <div id="svc-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="aorta-vti-module" class="module" data-protocol="expert">
-            <h2>VTI на выносящем тракте ЛЖ при дыхании</h2>
-             <div class="step-content">
-                <div class="instructions">
-                     <div class="visualization-element">
-                        <h4>Инструкции и визуализация</h4>
-                        <p>Апикальный 5-камерный доступ.</p>
-                        <img src="assets/aorta-vti-schema.png" alt="Схема измерения VTI на аорте">
-                       
-                    </div>
-                </div>
-                <div class="visualization">
-                    <div class="calculator">
-                       <label for="aorta-vti-before">VTI макс, см: <span class="previous-value" id="prev-aorta-vti-before"></span></label>
-<input type="number" id="aorta-vti-before" placeholder="напр. 20">
-<label for="aorta-vti-after">VTI мин, см: <span class="previous-value" id="prev-aorta-vti-after"></span></label>
-<input type="number" id="aorta-vti-after" placeholder="напр. 23">
-                        <label for="aorta-vti-tech">Технические сложности:</label>
-                        <select id="aorta-vti-tech">
-                            <option value="" selected disabled>Выберите...</option>
-                            <option value="нет">Нет</option>
-                            <option value="да">Да</option>
-                        </select>
-                        <button onclick="calculateAortaVTI()">Рассчитать вариабельность VTI</button>
-                    </div>
-                    <div class="result">
-                        <h4>Результат</h4>
-                        <p id="aorta-vti-result-text">...</p>
-                        <div id="aorta-vti-interpretation" class="interpretation-box"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-                <!-- ИТОГОВЫЙ БЛОК -->
-                <div class="final-actions">
-                    <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
-                    <div id="final-result-section" class="hidden">
-                        <h3>Итоговое заключение</h3>
-                        <div id="final-interpretation" class="interpretation-box"></div>
-                        <div class="form-group">
-                            <label for="clinical-decision">Ваши действия:</label>
-                            <select id="clinical-decision">
-                                <option value="" selected disabled>Выберите...</option>
-                                <option value="Болюс жидкости">Болюс жидкости</option>
-                                <option value="Инотропы">Инотропы</option>
-                                <option value="Вазопрессоры">Вазопрессоры</option>
-                                <option value="Де-эскалационная терапия">Де-эскалационная терапия</option>
-                                <option value="Тактика не изменена">Тактика не изменена</option>
-                            </select>
+                
+                                <section id="brachial-artery-module" class="module" data-protocol="advanced,expert">
+                    <h2>Оценка плечевой артерии при дыхании</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="brachial-vmax">Vmax, см/с: <span class="previous-value" id="prev-brachial-vmax"></span></label>
+                                <input type="number" id="brachial-vmax" placeholder="напр. 80">
+                                <label for="brachial-vmin">Vmin, см/с: <span class="previous-value" id="prev-brachial-vmin"></span></label>
+                                <input type="number" id="brachial-vmin" placeholder="напр. 70">
+                                <label for="brachial-tech">Технические сложности:</label>
+                                <select id="brachial-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateBrachialVpk()">Рассчитать вариабельность Vpk</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="brachial-vpk-result-text">...</p>
+                                <div id="brachial-vpk-interpretation" class="interpretation-box"></div>
+                            </div>
                         </div>
-                        <button id="finish-button" class="action-button" onclick="finishSession()">Завершить и сохранить</button>
                     </div>
-                </div>
-            </div>
-        </main>
-    </div>
-    <script src="script.js"></script>
+                </section>
+
+                                <section id="ivc-subcostal-module" class="module" data-protocol="advanced,expert">
+                    <h2>Нижняя полая вена при дыхании (субкостально)</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="ivc-sub-dmax">Макс. диаметр (Dmax), мм: <span class="previous-value" id="prev-ivc-sub-dmax"></span></label>
+                                <input type="number" id="ivc-sub-dmax" placeholder="напр. 21">
+                                <label for="ivc-sub-dmin">Мин. диаметр (Dmin), мм: <span class="previous-value" id="prev-ivc-sub-dmin"></span></label>
+                                <input type="number" id="ivc-sub-dmin" placeholder="напр. 10">
+                                <label for="ivc-sub-ventilation">Дыхание пациента:</label>
+                                <select id="ivc-sub-ventilation">
+                                    <option value="" disabled selected>Выберите режим...</option>
+                                    <option value="spontaneous">Спонтанное</option>
+                                    <option value="mechanical">ИВЛ</option>
+                                </select>
+                                <label for="ivc-sub-tech">Технические сложности:</label>
+                                <select id="ivc-sub-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateIVCSubcostal()">Рассчитать индекс коллабирования</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="ivc-sub-result-text">...</p>
+                                <div id="ivc-sub-interpretation" class="interpretation-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                                <section id="ivc-transhepatic-module" class="module" data-protocol="advanced,expert">
+                    <h2>Нижняя полая вена при дыхании (транспеченочно)</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="ivc-trans-dmax">Макс. диаметр (Dmax), мм: <span class="previous-value" id="prev-ivc-trans-dmax"></span></label>
+                                <input type="number" id="ivc-trans-dmax" placeholder="напр. 21">
+                                <label for="ivc-trans-dmin">Мин. диаметр (Dmin), мм: <span class="previous-value" id="prev-ivc-trans-dmin"></span></label>
+                                <input type="number" id="ivc-trans-dmin" placeholder="напр. 11">
+                                <label for="ivc-trans-ventilation">Дыхание пациента:</label>
+                                <select id="ivc-trans-ventilation">
+                                    <option value="" disabled selected>Выберите режим...</option>
+                                    <option value="spontaneous">Спонтанное</option>
+                                    <option value="mechanical">ИВЛ</option>
+                                </select>
+                                <label for="ivc-trans-tech">Технические сложности:</label>
+                                <select id="ivc-trans-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateIVCTranshepatic()">Рассчитать индекс коллабирования</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="ivc-trans-result-text">...</p>
+                                <div id="ivc-trans-interpretation" class="interpretation-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                                <section id="pa-vti-module" class="module" data-protocol="expert">
+                    <h2>VTI на легочной артерии при дыхании</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="pa-vti-before">VTI макс, см: <span class="previous-value" id="prev-pa-vti-before"></span></label>
+                                <input type="number" id="pa-vti-before" placeholder="напр. 15">
+                                <label for="pa-vti-after">VTI мин, см: <span class="previous-value" id="prev-pa-vti-after"></span></label>
+                                <input type="number" id="pa-vti-after" placeholder="напр. 18">
+                                <label for="pa-vti-tech">Технические сложности:</label>
+                                <select id="pa-vti-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculatePAVTI()">Рассчитать вариабельность VTI</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="pa-vti-result-text">...</p>
+                                <div id="pa-vti-interpretation" class="interpretation-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                                <section id="svc-module" class="module" data-protocol="expert">
+                    <h2>Верхняя полая вена при дыхании</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="svc-dmax">Макс. диаметр (Dmax), мм: <span class="previous-value" id="prev-svc-dmax"></span></label>
+                                <input type="number" id="svc-dmax" placeholder="напр. 18">
+                                <label for="svc-dmin">Мин. диаметр (Dmin), мм: <span class="previous-value" id="prev-svc-dmin"></span></label>
+                                <input type="number" id="svc-dmin" placeholder="напр. 10">
+                                <label for="svc-tech">Технические сложности:</label>
+                                <select id="svc-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateSVC()">Рассчитать индекс коллабирования</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="svc-result-text">...</p>
+                                <div id="svc-interpretation" class="interpretation-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                                <section id="aorta-vti-module" class="module" data-protocol="expert">
+                    <h2>VTI на выносящем тракте ЛЖ при дыхании</h2>
+                    <div class="step-content">
+                        <div class="visualization">
+                            <div class="calculator">
+                                <label for="aorta-vti-before">VTI макс, см: <span class="previous-value" id="prev-aorta-vti-before"></span></label>
+                                <input type="number" id="aorta-vti-before" placeholder="напр. 20">
+                                <label for="aorta-vti-after">VTI мин, см: <span class="previous-value" id="prev-aorta-vti-after"></span></label>
+                                <input type="number" id="aorta-vti-after" placeholder="напр. 23">
+                                <label for="aorta-vti-tech">Технические сложности:</label>
+                                <select id="aorta-vti-tech">
+                                    <option value="" selected disabled>Выберите...</option>
+                                    <option value="нет">Нет</option>
+                                    <option value="да">Да</option>
+                                </select>
+                                <button onclick="calculateAortaVTI()">Рассчитать вариабельность VTI</button>
+                            </div>
+                            <div class="result">
+                                <h4>Результат</h4>
+                                <p id="aorta-vti-result-text">...</p>
+                                <div id="aorta-vti-interpretation" class="interpretation-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                                <div class="final-actions">
+                    <button id="get-result-button" class="action-button" onclick="generateFinalReport()">Получить итоговый результат</button>
+                    <div id="final-result-section" class="hidden">
+                        <h3>Итоговое заключение</h3>
+                        <div id="final-interpretation" class="interpretation-box"></div>
+                        <div class="form-group">
+                            <label for="clinical-decision">Ваши действия:</label>
+                            <select id="clinical-decision">
+                                <option value="" selected disabled>Выберите...</option>
+                                <option value="Болюс жидкости">Болюс жидкости</option>
+                                <option value="Инотропы">Инотропы</option>
+                                <option value="Вазопрессоры">Вазопрессоры</option>
+                                <option value="Де-эскалационная терапия">Де-эскалационная терапия</option>
+                                <option value="Тактика не изменена">Тактика не изменена</option>
+                            </select>
+                        </div>
+                        <button id="finish-button" class="action-button" onclick="finishSession()">Завершить и сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
