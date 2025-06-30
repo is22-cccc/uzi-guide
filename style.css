@@ -124,7 +124,7 @@ body {
 .sidebar {
     flex: 0 0 250px;
     background-color: var(--white);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     position: sticky;
@@ -157,12 +157,12 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem; /* УМЕНЬШЕННЫЙ ОТСТУП МЕЖДУ БЛОКАМИ */
 }
 
 .module {
     background-color: var(--white);
-    padding: 2rem;
+    padding: 1.5rem 2rem; /* УМЕНЬШЕННЫЕ ВЕРТИКАЛЬНЫЕ ПАДДИНГИ */
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     scroll-margin-top: 1.5rem;
@@ -173,37 +173,25 @@ body {
     color: var(--primary-color);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
+    margin-bottom: 1.5rem; /* Добавлен отступ после заголовка */
 }
 
-/* --- ИСПРАВЛЕННАЯ СТРУКТУРА МАКЕТА --- */
-.module-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: flex-start;
-    margin-top: 1.5rem;
+/* --- СТИЛИ ДЛЯ КАЛЬКУЛЯТОРОВ И РЕЗУЛЬТАТОВ --- */
+
+/* Контейнер для калькулятора и результата теперь центрируется и имеет макс. ширину */
+.step-content .visualization {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
-.instructions-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.instructions-column img {
-    max-width: 100%;
-    border-radius: 8px;
-}
-.calculator-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
+
 .calculator {
     padding: 1rem;
     background: #fdfdfd;
     border: 1px solid var(--border-color);
     border-radius: 5px;
 }
-.calculator label { display: block; margin-top: 0.7rem; font-weight: 500; }
+.calculator label { display: block; margin-top: 0.8rem; font-weight: 500; }
 .calculator input, .calculator select {
     width: 100%;
     padding: 8px;
@@ -225,7 +213,12 @@ body {
     margin-top: 1.5rem;
 }
 
-.result { padding: 1rem; background-color: var(--bg-light); border-radius: 5px; }
+.result { 
+    margin-top: 1rem; /* Добавлен отступ между калькулятором и результатом */
+    padding: 1rem; 
+    background-color: var(--bg-light); 
+    border-radius: 5px; 
+}
 .interpretation-box {
     margin-top: 1rem; padding: 1rem; border-radius: 5px;
     font-weight: bold; font-size: 1.1rem; text-align: left;
@@ -235,25 +228,16 @@ body {
 .interpretation-box.non-responsive { background-color: var(--warning-bg); color: var(--warning-text); }
 .interpretation-box.neutral { background-color: #eef2f5; color: #546e7a; }
 
-.sub-module { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); }
+/* Особые стили для модуля ОСА с под-модулями */
+.sub-module { 
+    margin-top: 1.5rem; /* Уменьшен отступ */
+    padding-top: 1.5rem; /* Уменьшен отступ */
+    border-top: 2px solid var(--border-color); 
+}
 .sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
-.sub-module h3 { margin-top: 0; color: var(--accent-hover); grid-column: 1 / -1; }
+.sub-module h3 { margin-top: 0; color: var(--accent-hover); }
 
-/* --- ИСПРАВЛЕННЫЙ БЛОК: МАКЕТ ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
-.module.no-vis .module-content {
-    grid-template-columns: 1fr; /* Делаем одну колонку */
-}
-
-.module.no-vis .instructions-column {
-    display: none; /* Полностью скрываем левую колонку с инструкциями */
-}
-
-.module.no-vis .calculator-column {
-    /* Для правой колонки, которая осталась, задаем максимальную ширину и центрируем */
-    max-width: 450px;
-    margin: 0 auto;
-    width: 100%;
-}
+/* --- ОБЩИЕ ВСПОМОГАТЕЛЬНЫЕ СТИЛИ --- */
 .placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
 .final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
 .hidden { display: none !important; }
@@ -317,9 +301,6 @@ body {
     .module {
         padding: 1.5rem;
     }
-    .module-content {
-        grid-template-columns: 1fr; 
-    }
     .sub-module .step-content {
         grid-template-columns: 1fr;
     }
@@ -330,44 +311,4 @@ body {
         margin: 5vh auto;
         padding: 1rem;
     }
-}
-
-/* Этот блок стилей находит контейнер с калькулятором и результатом (.visualization),
-  ограничивает его максимальную ширину до 550px и центрирует по горизонтали.
-*/
-.module .visualization {
-    max-width: 550px; /* Можете изменить это значение по вкусу (например, 500px или 600px) */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Для модуля ОСА используется дополнительный класс .sub-module, 
-  поэтому для него нужно продублировать правило, чтобы оно тоже применилось.
-*/
-.sub-module .step-content {
-    display: block; /* Убираем грид-сетку, если она была */
-}
-
-.sub-module .visualization {
-    max-width: 550px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* --- Уменьшение вертикальных отступов между блоками --- */
-
-/* 1. Уменьшаем расстояние МЕЖДУ модулями (было 1.5rem) */
-.modules-wrapper {
-    gap: 1rem; /* Можете попробовать 0.75rem для еще более плотного вида */
-}
-
-/* 2. (Опционально) Уменьшаем внутренние отступы ВНУТРИ каждого модуля (было 2rem) */
-.module {
-    padding: 1.5rem;
-}
-
-/* Также немного уменьшим верхний отступ у под-модулей (как у ОСА) */
-.sub-module {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
 }
