@@ -331,3 +331,25 @@ body {
         padding: 1rem;
     }
 }
+
+/* Этот блок стилей находит контейнер с калькулятором и результатом (.visualization),
+  ограничивает его максимальную ширину до 550px и центрирует по горизонтали.
+*/
+.module .visualization {
+    max-width: 550px; /* Можете изменить это значение по вкусу (например, 500px или 600px) */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Для модуля ОСА используется дополнительный класс .sub-module, 
+  поэтому для него нужно продублировать правило, чтобы оно тоже применилось.
+*/
+.sub-module .step-content {
+    display: block; /* Убираем грид-сетку, если она была */
+}
+
+.sub-module .visualization {
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+}
