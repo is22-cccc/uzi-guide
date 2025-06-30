@@ -120,20 +120,39 @@ function loadPreviousMeasurements(patientId) {
 }
 
 // --- Функции-калькуляторы ---
-function calculateIJV(){
+// Полностью замените старую функцию calculateIJV на эту
+function calculateIJV() {
     const hmax = document.getElementById('hmax').value;
     const hmin = document.getElementById('hmin').value;
     const tech = document.getElementById('ijv-tech').value;
-    if (!hmax || !hmin || !tech) { alert('Заполните все поля для ВЯВ.'); return; }
+    const ventilation = document.getElementById('ijv-ventilation').value; // <-- 1. Считываем значение из нового списка
+
+    // 2. Добавляем 'ventilation' в проверку на заполненность
+    if (!hmax || !hmin || !tech || !ventilation) { 
+        alert('Заполните все поля для ВЯВ, включая режим дыхания.'); 
+        return; 
+    }
+
     const variability = ((parseFloat(hmax) - parseFloat(hmin)) / ((parseFloat(hmax) + parseFloat(hmin)) / 2)) * 100;
     document.getElementById('ijv-result-text').innerText = `Вариабельность ВЯВ: ${variability.toFixed(1)}%`;
-    const cutoff = 18;
-    const responsive = variability > cutoff;
+
+    // Используем разную логику для разных режимов дыхания
+    let cutoff, responsive;
+    if (ventilation === 'spontaneous') {
+        cutoff = 36; 
+        responsive = variability > cutoff;
+    } else { // 'mechanical'
+        cutoff = 18; 
+        responsive = variability > cutoff;
+    }
+    
     const interpretationBox = document.getElementById('ijv-interpretation');
     interpretationBox.className = 'interpretation-box';
     interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
     interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
-    saveMeasurement('ВЯВ', { hmax, hmin, tech, value: variability.toFixed(1), isResponsive: responsive });
+    
+    // 3. Добавляем 'ventilation' в объект данных для сохранения
+    saveMeasurement('ВЯВ', { hmax, hmin, tech, ventilation, value: variability.toFixed(1), isResponsive: responsive });
 }
 function calculateCCA_Vpk(){
     const vmax = document.getElementById('vmax').value;
@@ -373,13 +392,14 @@ function calculateBrachialVpk() {
 }
 
 // МОДУЛЬ 4: НИЖНЯЯ ПОЛАЯ ВЕНА (СУБКОСТАЛЬНО)
+// Проверьте, что ваша функция выглядит так
 function calculateIVCSubcostal() {
     const dmax = document.getElementById('ivc-sub-dmax').value;
     const dmin = document.getElementById('ivc-sub-dmin').value;
-    const ventilation = document.getElementById('ivc-sub-ventilation').value;
+    const ventilation = document.getElementById('ivc-sub-ventilation').value; // <-- Считывается здесь
     const tech = document.getElementById('ivc-sub-tech').value;
 
-    if (!dmax || !dmin || !ventilation || !tech) {
+    if (!dmax || !dmin || !ventilation || !tech) { // <-- Проверяется здесь
         alert('Заполните все поля для НПВ (субкостально).');
         return;
     }
@@ -387,16 +407,14 @@ function calculateIVCSubcostal() {
     let index, cutoff, responsive, resultText, interpretationText;
 
     if (ventilation === 'spontaneous') {
-        // Для спонтанного дыхания считаем Индекс Коллабирования (CI)
         index = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmax)) * 100;
-        cutoff = 40; // Примерный порог для индекса коллабирования
+        cutoff = 40; 
         responsive = index > cutoff;
         resultText = `Индекс коллабирования (CI): ${index.toFixed(1)}%`;
         interpretationText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
     } else { // 'mechanical'
-        // Для ИВЛ считаем Индекс Растяжимости (DI)
         index = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmin)) * 100;
-        cutoff = 18; // Примерный порог для индекса растяжимости
+        cutoff = 18; 
         responsive = index > cutoff;
         resultText = `Индекс растяжимости (DI): ${index.toFixed(1)}%`;
         interpretationText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
@@ -408,6 +426,7 @@ function calculateIVCSubcostal() {
     interpretationBox.innerText = interpretationText;
     interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
 
+    // <-- И сохраняется здесь
     saveMeasurement('НПВ_субкостально', { dmax, dmin, ventilation, tech, value: index.toFixed(1), isResponsive: responsive });
 }
 
