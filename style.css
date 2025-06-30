@@ -157,12 +157,12 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem; /* УМЕНЬШЕННЫЙ ОТСТУП МЕЖДУ БЛОКАМИ */
+    gap: 1.5rem; /* Исходный гармоничный отступ между модулями */
 }
 
 .module {
     background-color: var(--white);
-    padding: 1.5rem 2rem; /* УМЕНЬШЕННЫЕ ВЕРТИКАЛЬНЫЕ ПАДДИНГИ */
+    padding: 2rem; /* Исходный внутренний отступ */
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     scroll-margin-top: 1.5rem;
@@ -173,16 +173,7 @@ body {
     color: var(--primary-color);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
-    margin-bottom: 1.5rem; /* Добавлен отступ после заголовка */
-}
-
-/* --- СТИЛИ ДЛЯ КАЛЬКУЛЯТОРОВ И РЕЗУЛЬТАТОВ --- */
-
-/* Контейнер для калькулятора и результата теперь центрируется и имеет макс. ширину */
-.step-content .visualization {
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 1.5rem;
 }
 
 .calculator {
@@ -214,7 +205,7 @@ body {
 }
 
 .result { 
-    margin-top: 1rem; /* Добавлен отступ между калькулятором и результатом */
+    margin-top: 1rem;
     padding: 1rem; 
     background-color: var(--bg-light); 
     border-radius: 5px; 
@@ -230,12 +221,13 @@ body {
 
 /* Особые стили для модуля ОСА с под-модулями */
 .sub-module { 
-    margin-top: 1.5rem; /* Уменьшен отступ */
-    padding-top: 1.5rem; /* Уменьшен отступ */
+    margin-top: 2rem; 
+    padding-top: 2rem; 
     border-top: 2px solid var(--border-color); 
 }
 .sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
 .sub-module h3 { margin-top: 0; color: var(--accent-hover); }
+
 
 /* --- ОБЩИЕ ВСПОМОГАТЕЛЬНЫЕ СТИЛИ --- */
 .placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
@@ -311,4 +303,19 @@ body {
         margin: 5vh auto;
         padding: 1rem;
     }
+}
+
+/* =============================================== */
+/* ФИНАЛЬНАЯ КОРРЕКЦИЯ МАКЕТА ДЛЯ КОМПАКТНОГО ВИДА */
+/* =============================================== */
+
+/* 1. Отменяем старую двухколонную сетку для контента модулей */
+.module .step-content {
+    display: block; /* Вместо 'grid', чтобы был один поток */
+}
+
+/* 2. Центрируем и ограничиваем ширину блока с калькулятором */
+.module .visualization {
+    max-width: 550px; /* Задаем максимальную ширину */
+    margin: 0 auto;   /* Центрируем блок по горизонтали */
 }
