@@ -249,18 +249,19 @@ async function finishSession() {
     window.location.reload();
 }
 function saveMeasurement(measurementName, data) {
-    currentSession.measurements[measurementName] = data;
-    const dataToSend = {
-        dataType: 'measurement',
-        timestamp: new Date().toISOString(),
-        researcherId: currentSession.researcherId,
-        patientId: currentSession.patientId,
-        measurement: measurementName,
-        value: data.value,
-        isResponsive: data.isResponsive,
-        techIssue: data.tech,
-        age: data.age || 'N/A' // Добавляем возраст, если он есть
-    };
+    currentSession.measurements[measurementName] = data;
+    const dataToSend = {
+        dataType: 'measurement',
+        timestamp: new Date().toISOString(),
+        researcherId: currentSession.researcherId,
+        patientId: currentSession.patientId,
+        measurement: measurementName,
+        value: data.value,
+        isResponsive: data.isResponsive,
+        techIssue: data.tech,
+        age: data.age || 'N/A',
+        ventilation: data.ventilation || 'N/A' // <--- ВОТ ЭТА СТРОКА РЕШАЕТ ПРОБЛЕМУ
+    };
     
     // Локальное сохранение для подтягивания "предыдущих" значений
     let allPatientData = JSON.parse(localStorage.getItem(`data_${currentSession.patientId}`)) || [];
