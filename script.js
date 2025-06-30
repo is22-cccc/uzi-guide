@@ -346,3 +346,177 @@ function generateProtocolMenu() {
     });
     setupSidebarScroll();
 }
+// --- Функции-калькуляторы для новых модулей ---
+
+// МОДУЛЬ 3: ПЛЕЧЕВАЯ АРТЕРИЯ (Brachial Artery Vpk)
+function calculateBrachialVpk() {
+    const vmax = document.getElementById('brachial-vmax').value;
+    const vmin = document.getElementById('brachial-vmin').value;
+    const tech = document.getElementById('brachial-tech').value;
+
+    if (!vmax || !vmin || !tech) {
+        alert('Заполните все поля для плечевой артерии.');
+        return;
+    }
+
+    const variability = ((parseFloat(vmax) - parseFloat(vmin)) / ((parseFloat(vmax) + parseFloat(vmin)) / 2)) * 100;
+    document.getElementById('brachial-vpk-result-text').innerText = `Вариабельность Vpk: ${variability.toFixed(1)}%`;
+
+    const cutoff = 10; // Пороговое значение для Vpk плечевой артерии
+    const responsive = variability > cutoff;
+    const interpretationBox = document.getElementById('brachial-vpk-interpretation');
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+
+    saveMeasurement('Vpk_Плечевая', { vmax, vmin, tech, value: variability.toFixed(1), isResponsive: responsive });
+}
+
+// МОДУЛЬ 4: НИЖНЯЯ ПОЛАЯ ВЕНА (СУБКОСТАЛЬНО)
+function calculateIVCSubcostal() {
+    const dmax = document.getElementById('ivc-sub-dmax').value;
+    const dmin = document.getElementById('ivc-sub-dmin').value;
+    const ventilation = document.getElementById('ivc-sub-ventilation').value;
+    const tech = document.getElementById('ivc-sub-tech').value;
+
+    if (!dmax || !dmin || !ventilation || !tech) {
+        alert('Заполните все поля для НПВ (субкостально).');
+        return;
+    }
+
+    let index, cutoff, responsive, resultText, interpretationText;
+
+    if (ventilation === 'spontaneous') {
+        // Для спонтанного дыхания считаем Индекс Коллабирования (CI)
+        index = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmax)) * 100;
+        cutoff = 40; // Примерный порог для индекса коллабирования
+        responsive = index > cutoff;
+        resultText = `Индекс коллабирования (CI): ${index.toFixed(1)}%`;
+        interpretationText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    } else { // 'mechanical'
+        // Для ИВЛ считаем Индекс Растяжимости (DI)
+        index = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmin)) * 100;
+        cutoff = 18; // Примерный порог для индекса растяжимости
+        responsive = index > cutoff;
+        resultText = `Индекс растяжимости (DI): ${index.toFixed(1)}%`;
+        interpretationText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    }
+    
+    document.getElementById('ivc-sub-result-text').innerText = resultText;
+    const interpretationBox = document.getElementById('ivc-sub-interpretation');
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = interpretationText;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+
+    saveMeasurement('НПВ_субкостально', { dmax, dmin, ventilation, tech, value: index.toFixed(1), isResponsive: responsive });
+}
+
+// МОДУЛЬ 5: НИЖНЯЯ ПОЛАЯ ВЕНА (ТРАНСПЕЧЕНОЧНО)
+function calculateIVCTranshepatic() {
+    const dmax = document.getElementById('ivc-trans-dmax').value;
+    const dmin = document.getElementById('ivc-trans-dmin').value;
+    const ventilation = document.getElementById('ivc-trans-ventilation').value;
+    const tech = document.getElementById('ivc-trans-tech').value;
+    
+    if (!dmax || !dmin || !ventilation || !tech) {
+        alert('Заполните все поля для НПВ (транспеченочно).');
+        return;
+    }
+
+    let index, cutoff, responsive, resultText, interpretationText;
+
+    if (ventilation === 'spontaneous') {
+        index = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmax)) * 100;
+        cutoff = 40;
+        responsive = index > cutoff;
+        resultText = `Индекс коллабирования (CI): ${index.toFixed(1)}%`;
+        interpretationText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    } else { // 'mechanical'
+        index = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmin)) * 100;
+        cutoff = 18;
+        responsive = index > cutoff;
+        resultText = `Индекс растяжимости (DI): ${index.toFixed(1)}%`;
+        interpretationText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    }
+
+    document.getElementById('ivc-trans-result-text').innerText = resultText;
+    const interpretationBox = document.getElementById('ivc-trans-interpretation');
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = interpretationText;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+
+    saveMeasurement('НПВ_транспеченочно', { dmax, dmin, ventilation, tech, value: index.toFixed(1), isResponsive: responsive });
+}
+
+// МОДУЛЬ 6: VTI НА ЛЕГОЧНОЙ АРТЕРИИ (с пробой PLR)
+function calculatePAVTI() {
+    const vtiBefore = document.getElementById('pa-vti-before').value;
+    const vtiAfter = document.getElementById('pa-vti-after').value;
+    const tech = document.getElementById('pa-vti-tech').value;
+
+    if (!vtiBefore || !vtiAfter || !tech) {
+        alert('Заполните все поля для VTI на легочной артерии.');
+        return;
+    }
+
+    const variability = ((parseFloat(vtiAfter) - parseFloat(vtiBefore)) / parseFloat(vtiBefore)) * 100;
+    document.getElementById('pa-vti-result-text').innerText = `Изменение VTI после PLR: ${variability.toFixed(1)}%`;
+
+    const cutoff = 12; // Порог для изменения VTI на ЛА после PLR
+    const responsive = variability > cutoff;
+    const interpretationBox = document.getElementById('pa-vti-interpretation');
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+    
+    saveMeasurement('VTI_ЛА_PLR', { vtiBefore, vtiAfter, tech, value: variability.toFixed(1), isResponsive: responsive });
+}
+
+// МОДУЛЬ 7: ВЕРХНЯЯ ПОЛАЯ ВЕНА (TEE)
+function calculateSVC() {
+    const dmax = document.getElementById('svc-dmax').value;
+    const dmin = document.getElementById('svc-dmin').value;
+    const tech = document.getElementById('svc-tech').value;
+
+    if (!dmax || !dmin || !tech) {
+        alert('Заполните все поля для верхней полой вены.');
+        return;
+    }
+
+    // Для ВПВ (TEE) на ИВЛ используется индекс коллабирования
+    const variability = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmax)) * 100;
+    document.getElementById('svc-result-text').innerText = `Индекс коллабирования ВПВ: ${variability.toFixed(1)}%`;
+
+    const cutoff = 36; // Порог для SVC collapsibility index
+    const responsive = variability > cutoff;
+    const interpretationBox = document.getElementById('svc-interpretation');
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+
+    saveMeasurement('ВПВ_TEE', { dmax, dmin, tech, value: variability.toFixed(1), isResponsive: responsive });
+}
+
+// МОДУЛЬ 8: VTI НА АОРТЕ (с пробой PLR)
+function calculateAortaVTI() {
+    const vtiBefore = document.getElementById('aorta-vti-before').value;
+    const vtiAfter = document.getElementById('aorta-vti-after').value;
+    const tech = document.getElementById('aorta-vti-tech').value;
+
+    if (!vtiBefore || !vtiAfter || !tech) {
+        alert('Заполните все поля для VTI на аорте.');
+        return;
+    }
+
+    const variability = ((parseFloat(vtiAfter) - parseFloat(vtiBefore)) / parseFloat(vtiBefore)) * 100;
+    document.getElementById('aorta-vti-result-text').innerText = `Изменение VTI после PLR: ${variability.toFixed(1)}%`;
+
+    const cutoff = 12; // Порог для изменения VTI в ВТЛЖ после PLR
+    const responsive = variability > cutoff;
+    const interpretationBox = document.getElementById('aorta-vti-interpretation');
+    interpretationBox.className = 'interpretation-box';
+    interpretationBox.innerText = responsive ? `> ${cutoff}%. Вероятен ответ на инфузию.` : `≤ ${cutoff}%. Ответ на инфузию маловероятен.`;
+    interpretationBox.classList.add(responsive ? 'responsive' : 'non-responsive');
+
+    saveMeasurement('VTI_Аорта_PLR', { vtiBefore, vtiAfter, tech, value: variability.toFixed(1), isResponsive: responsive });
+}
