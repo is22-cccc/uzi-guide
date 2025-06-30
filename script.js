@@ -155,7 +155,7 @@ function calculateIJV() {
     document.getElementById('ijv-result-text').innerText = `Вариабельность ВЯВ: ${variability.toFixed(1)}%`;
     let cutoff, responsive;
     if (ventilation === 'spontaneous') {
-        cutoff = 36; 
+        cutoff = 18; 
         responsive = variability > cutoff;
     } else { // 'mechanical'
         cutoff = 18; 
@@ -208,7 +208,7 @@ function calculateBrachialVpk() {
     if (!vmax || !vmin || !tech) { alert('Заполните все поля для плечевой артерии.'); return; }
     const variability = ((parseFloat(vmax) - parseFloat(vmin)) / ((parseFloat(vmax) + parseFloat(vmin)) / 2)) * 100;
     document.getElementById('brachial-vpk-result-text').innerText = `Вариабельность Vpk: ${variability.toFixed(1)}%`;
-    const cutoff = 10;
+    const cutoff = 12;
     const responsive = variability > cutoff;
     const interpretationBox = document.getElementById('brachial-vpk-interpretation');
     interpretationBox.className = 'interpretation-box';
@@ -280,7 +280,7 @@ function calculatePAVTI() {
     if (!vtiBefore || !vtiAfter || !tech) { alert('Заполните все поля для VTI на легочной артерии.'); return; }
     const variability = ((parseFloat(vtiAfter) - parseFloat(vtiBefore)) / parseFloat(vtiBefore)) * 100;
     document.getElementById('pa-vti-result-text').innerText = `Изменение VTI после PLR: ${variability.toFixed(1)}%`;
-    const cutoff = 12;
+    const cutoff = 14;
     const responsive = variability > cutoff;
     const interpretationBox = document.getElementById('pa-vti-interpretation');
     interpretationBox.className = 'interpretation-box';
@@ -296,7 +296,7 @@ function calculateSVC() {
     if (!dmax || !dmin || !tech) { alert('Заполните все поля для верхней полой вены.'); return; }
     const variability = ((parseFloat(dmax) - parseFloat(dmin)) / parseFloat(dmax)) * 100;
     document.getElementById('svc-result-text').innerText = `Индекс коллабирования ВПВ: ${variability.toFixed(1)}%`;
-    const cutoff = 36;
+    const cutoff = 21;
     const responsive = variability > cutoff;
     const interpretationBox = document.getElementById('svc-interpretation');
     interpretationBox.className = 'interpretation-box';
@@ -312,7 +312,7 @@ function calculateAortaVTI() {
     if (!vtiBefore || !vtiAfter || !tech) { alert('Заполните все поля для VTI на аорте.'); return; }
     const variability = ((parseFloat(vtiAfter) - parseFloat(vtiBefore)) / parseFloat(vtiBefore)) * 100;
     document.getElementById('aorta-vti-result-text').innerText = `Изменение VTI после PLR: ${variability.toFixed(1)}%`;
-    const cutoff = 12;
+    const cutoff = 15;
     const responsive = variability > cutoff;
     const interpretationBox = document.getElementById('aorta-vti-interpretation');
     interpretationBox.className = 'interpretation-box';
