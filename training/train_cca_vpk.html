@@ -1,25 +1,66 @@
-<section id="cca-module" class="module">
-    <h2>Калькулятор для практики</h2>
-    <div class="step-content">
-        <div class="visualization">
-            <div class="calculator">
-                <label for="vmax">Vmax, см/с:</label>
-                <input type="number" id="vmax" placeholder="100">
-                <label for="vmin">Vmin, см/с:</label>
-                <input type="number" id="vmin" placeholder="85">
-                <label for="vpk-tech">Технические сложности:</label>
-                <select id="vpk-tech">
-                    <option value="" selected disabled>Выберите...</option>
-                    <option value="нет">Нет</option>
-                    <option value="да">Да</option>
-                </select>
-                <button onclick="calculateCCA_Vpk(true)">Рассчитать Vpk (без сохранения)</button>
-            </div>
-            <div class="result">
-                <h4>Результат Vpk</h4>
-                <p id="vpk-result-text">...</p>
-                <div id="vpk-interpretation" class="interpretation-box"></div>
-            </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение: Vpk Общей Сонной Артерии</title>
+    <link rel="stylesheet" href="../css/style.css"> </head>
+<body>
+    <header class="main-header">
+        <div class="header-text">
+            <h1>Режим обучения: Оценка Vpk ОСА</h1>
+            <p><a href="../index.html" style="color: white; text-decoration: none;">Вернуться в главное меню</a></p>
         </div>
-    </div>
-</section>
+    </header>
+    
+    <main class="content-container" style="display: block; max-width: 900px; margin: 1.5rem auto;">
+        
+        <div class="module">
+            <h2>Пошаговые инструкции</h2>
+            <p><strong>Шаг 1: Позиционирование.</strong> Пациент лежит на спине, голова слегка повернута в сторону, противоположную от места измерения.</p>
+            
+            <p style="margin-top: 1rem;"><strong>Шаг 2: Визуализация.</strong> Используя линейный датчик, выведите общую сонную артерию в продольном сечении. Установите контрольный объем импульсно-волнового допплера по центру сосуда.</p>
+
+            <p style="margin-top: 1rem;"><strong>Шаг 3: Измерение.</strong> Зафиксируйте допплеровский спектр на протяжении нескольких дыхательных циклов. Измерьте максимальную систолическую скорость (Vmax) на пике вдоха и минимальную (Vmin) на пике выдоха.</p>
+        </div>
+
+        <section id="cca-module" class="module">
+            <h2>Калькулятор для практики</h2>
+            <div class="step-content">
+                <div class="visualization">
+                    <div class="calculator">
+                        <label for="vmax">Vmax, см/с:</label>
+                        <input type="number" id="vmax" placeholder="100">
+
+                        <label for="vmin">Vmin, см/с:</label>
+                        <input type="number" id="vmin" placeholder="85">
+
+                        <label for="cca-vpk-ventilation">Дыхание пациента:</label>
+                        <select id="cca-vpk-ventilation">
+                            <option value="" disabled selected>Выберите режим...</option>
+                            <option value="spontaneous">Спонтанное</option>
+                            <option value="mechanical">ИВЛ</option>
+                        </select>
+
+                        <label for="vpk-tech">Технические сложности:</label>
+                        <select id="vpk-tech">
+                            <option value="" selected disabled>Выберите...</option>
+                            <option value="нет">Нет</option>
+                            <option value="да">Да</option>
+                        </select>
+                        
+                        <button onclick="calculateCCA_Vpk(true)">Рассчитать Vpk (без сохранения)</button>
+                    </div>
+                    <div class="result">
+                        <h4>Результат Vpk</h4>
+                        <p id="vpk-result-text">...</p>
+                        <div id="vpk-interpretation" class="interpretation-box"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/calculator_logic.js"></script>
+</body>
+</html>
