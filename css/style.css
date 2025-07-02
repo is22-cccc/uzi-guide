@@ -1,1 +1,420 @@
+/* --- Глобальные переменные --- */
+:root {
+    --primary-color: #01295f; /* Темно-синий */
+    --accent-color: #00a5e5; /* Ярко-голубой */
+    --accent-hover: #008ac7;
+    --success-color: #00b899; /* Зеленый */
+    --bg-light: #f4f7f9;
+    --text-dark: #333;
+    --text-light: #fff;
+    --border-color: #eef2f5;
+    --white: #fff;
+    --warning-bg: #fff3e0;
+    --warning-text: #e65100;
+}
 
+/* --- Базовые стили --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* --- Стили для экранов выбора --- */
+.screen { display: none; }
+.screen.active { display: block; }
+
+.screen-content {
+    max-width: 700px;
+    margin: 10vh auto;
+    text-align: center;
+    padding: 2rem;
+}
+.screen-content h1, .screen-content h2 { color: var(--primary-color); }
+
+.logo {
+    max-width: 250px;
+    margin-bottom: 1.5rem;
+}
+
+.action-button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    transition: background-color 0.2s;
+}
+.action-button:hover { background-color: var(--accent-hover); }
+
+.choice-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.choice-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: var(--white);
+    color: var(--primary-color);
+    transition: all 0.2s;
+}
+.choice-button:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+.choice-button.selected {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+
+#active-sessions-container { margin-top: 2rem; text-align: left;}
+#active-sessions-list { list-style: none; padding: 0; }
+#active-sessions-list li {
+    background: var(--white);
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+#active-sessions-list li:hover { 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-color: var(--accent-color);
+}
+
+
+/* --- Стили для основного рабочего пространства --- */
+.main-header {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 1rem 2rem;
+    text-align: center;
+}
+.main-header h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--white);
+}
+.sub-header { font-size: 0.9rem; opacity: 0.8; margin: 0; }
+
+.content-container {
+    display: flex;
+    margin: 1.5rem;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.sidebar {
+    flex: 0 0 250px;
+    background-color: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 1.5rem;
+}
+.sidebar h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+.sidebar ul { list-style: none; padding: 0; margin: 0; }
+.sidebar li a {
+    text-decoration: none;
+    color: var(--text-dark);
+    display: block;
+    padding: 0.7rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+.sidebar li a:hover { background-color: var(--border-color); }
+.sidebar li.active a {
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+.modules-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.module {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    scroll-margin-top: 1.5rem;
+}
+.module.hidden { display: none; }
+.module h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+/* --- ИСПРАВЛЕННАЯ СТРУКТУРА МАКЕТА --- */
+.module-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-top: 1.5rem;
+}
+.instructions-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.instructions-column img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+.calculator-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.calculator {
+    padding: 1rem;
+    background: #fdfdfd;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+.calculator label { display: block; margin-top: 0.7rem; font-weight: 500; }
+.calculator input, .calculator select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.calculator button {
+    display: block;
+    background-color: var(--success-color);
+    color: #fff;
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+}
+
+.result { padding: 1rem; background-color: var(--bg-light); border-radius: 5px; }
+.interpretation-box {
+    margin-top: 1rem; padding: 1rem; border-radius: 5px;
+    font-weight: bold; font-size: 1.1rem; text-align: left;
+    min-height: 50px;
+}
+.interpretation-box.responsive { background-color: #e8f5e9; color: #2e7d32; }
+.interpretation-box.non-responsive { background-color: var(--warning-bg); color: var(--warning-text); }
+.interpretation-box.neutral { background-color: #eef2f5; color: #546e7a; }
+
+.sub-module { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); }
+.sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
+.sub-module h3 { margin-top: 0; color: var(--accent-hover); grid-column: 1 / -1; }
+
+/* --- ИСПРАВЛЕННЫЙ БЛОК: МАКЕТ ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
+.module.no-vis .module-content {
+    grid-template-columns: 1fr; /* Делаем одну колонку */
+}
+
+.module.no-vis .instructions-column {
+    display: none; /* Полностью скрываем левую колонку с инструкциями */
+}
+
+.module.no-vis .calculator-column {
+    /* Для правой колонки, которая осталась, задаем максимальную ширину и центрируем */
+    max-width: 450px;
+    margin: 0 auto;
+    width: 100%;
+}
+.placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
+.final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
+.hidden { display: none !important; }
+.previous-value {
+    font-size: 0.8em;
+    font-weight: 400;
+    color: #888;
+    margin-left: 8px;
+}
+#follow-up-evaluation {
+    background-color: var(--warning-bg);
+    border: 2px solid var(--warning-text);
+}
+#follow-up-evaluation h2 {
+    color: var(--warning-text);
+    border-bottom-color: rgba(230, 81, 0, 0.2);
+}
+.form-group {
+    margin: 1.5rem 0;
+}
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+#finish-button { background-color: var(--primary-color); }
+
+
+/* --- АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
+@media (max-width: 992px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        flex-direction: column; 
+        margin: 0; 
+        gap: 0;
+    }
+    .main-header {
+        padding: 0.8rem 1rem;
+    }
+    .header-text h1 {
+        font-size: 1rem;
+    }
+    .modules-wrapper {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    .sidebar {
+        display: none;
+    }
+    .module {
+        padding: 1.5rem;
+    }
+    .module-content {
+        grid-template-columns: 1fr; 
+    }
+    .sub-module .step-content {
+        grid-template-columns: 1fr;
+    }
+    .choice-group {
+        flex-direction: column;
+    }
+    .screen-content {
+        margin: 5vh auto;
+        padding: 1rem;
+    }
+}
+
+
+
+/* =============================================== */
+/* СТИЛИ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ И МЕНЮ-АККОРДЕОНА   */
+/* =============================================== */
+
+.main-menu { 
+    max-width: 800px; 
+    margin: 5vh auto; 
+    text-align: center; 
+    padding: 1rem; /* Добавлен паддинг для мобильных */
+}
+
+.menu-section { 
+    margin-top: 2rem; 
+    border-top: 1px solid #ddd; 
+    padding-top: 2rem; 
+}
+
+.accordion-title {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    position: relative; /* Нужно для позиционирования псевдо-элемента */
+    user-select: none; /* Запрещаем выделение текста при клике */
+    transition: margin-bottom 0.3s ease-in-out;
+}
+
+/* Добавляем иконку "+" справа */
+.accordion-title::after {
+    content: '+';
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    font-weight: 300;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Стили для активного (открытого) заголовка */
+.accordion-title.active {
+    margin-bottom: 0.5rem;
+}
+
+/* Меняем "+" на "–" и поворачиваем для анимации */
+.accordion-title.active::after {
+    content: '−'; /* Используем правильный знак минуса */
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.accordion-content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* Скрываем контент, который выходит за пределы max-height */
+    max-height: 0; /* В закрытом состоянии высота равна 0 */
+    transition: max-height 0.4s ease-in-out; /* Анимация высоты */
+}
+
+/* Когда заголовок активен, показываем следующий за ним контент */
+.accordion-title.active + .accordion-content {
+    /* Устанавливаем достаточно большую высоту, чтобы вместить все пункты */
+    max-height: 500px; 
+}
+
+.accordion-content li a {
+    display: block;
+    padding: 0.8rem;
+    background-color: var(--white);
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: background-color 0.2s;
+    border: 1px solid var(--border-color);
+}
+
+.accordion-content li a:hover { 
+    background-color: var(--border-color); 
+    border-color: var(--accent-color);
+}
