@@ -1,0 +1,25 @@
+<section id="cca-module" class="module">
+    <h2>Калькулятор для практики</h2>
+    <div class="step-content">
+        <div class="visualization">
+            <div class="calculator">
+                <label for="vmax">Vmax, см/с:</label>
+                <input type="number" id="vmax" placeholder="100">
+                <label for="vmin">Vmin, см/с:</label>
+                <input type="number" id="vmin" placeholder="85">
+                <label for="vpk-tech">Технические сложности:</label>
+                <select id="vpk-tech">
+                    <option value="" selected disabled>Выберите...</option>
+                    <option value="нет">Нет</option>
+                    <option value="да">Да</option>
+                </select>
+                <button onclick="calculateCCA_Vpk(true)">Рассчитать Vpk (без сохранения)</button>
+            </div>
+            <div class="result">
+                <h4>Результат Vpk</h4>
+                <p id="vpk-result-text">...</p>
+                <div id="vpk-interpretation" class="interpretation-box"></div>
+            </div>
+        </div>
+    </div>
+</section>
