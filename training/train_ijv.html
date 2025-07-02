@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение: Оценка ВЯВ</title>
+    <link rel="stylesheet" href="../css/style.css"> </head>
+<body>
+    <header class="main-header">
+        <div class="header-text">
+            <h1>Режим обучения: Оценка ВЯВ</h1>
+            <p><a href="../index.html" style="color: white; text-decoration: none;">Вернуться в главное меню</a></p>
+        </div>
+    </header>
+    
+    <main class="content-container" style="display: block; max-width: 900px; margin: 1.5rem auto;">
+        
+        <div class="module">
+            <h2>Пошаговые инструкции</h2>
+            <p><strong>Шаг 1: Позиционирование пациента.</strong> Уложите пациента в положение на спине. Для лучшей визуализации можно подложить валик под плечи.</p>
+            <p style="margin-top: 1rem;"><strong>Шаг 2: Настройка датчика.</strong> Используйте линейный высокочастотный датчик. Нанесите достаточное количество геля.</p>
+            <p style="margin-top: 1rem;"><strong>Шаг 3: Визуализация и измерение.</strong> Найдите вену в поперечном сечении рядом с сонной артерией. Переключитесь в М-режим для оценки изменения диаметра на вдохе и выдохе.</p>
+        </div>
+
+        <section id="ijv-module" class="module">
+            <h2>Калькулятор для практики</h2>
+            <div class="step-content">
+                <div class="visualization">
+                    <div class="calculator">
+                        <label for="hmax">Макс. диаметр (Hmax), мм:</label>
+                        <input type="number" id="hmax" placeholder="напр. 15">
+                        <label for="hmin">Мин. диаметр (Hmin), мм:</label>
+                        <input type="number" id="hmin" placeholder="напр. 5">
+                        <label for="ijv-ventilation">Дыхание пациента:</label>
+                        <select id="ijv-ventilation">
+                            <option value="" disabled selected>Выберите режим...</option>
+                            <option value="spontaneous">Спонтанное</option>
+                            <option value="mechanical">ИВЛ</option>
+                        </select>
+                        <label for="ijv-tech">Технические сложности:</label>
+                        <select id="ijv-tech">
+                            <option value="" selected disabled>Выберите...</option>
+                            <option value="нет">Нет</option>
+                            <option value="да">Да</option>
+                        </select>
+                        <button onclick="calculateIJV(true)">Рассчитать (без сохранения)</button>
+                    </div>
+                    <div class="result">
+                        <h4>Результат</h4>
+                        <p id="ijv-result-text">...</p>
+                        <div id="ijv-interpretation" class="interpretation-box"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../js/calculator_logic.js"></script>
+</body>
+</html>
