@@ -331,3 +331,90 @@ body {
         padding: 1rem;
     }
 }
+
+
+
+/* =============================================== */
+/* СТИЛИ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ И МЕНЮ-АККОРДЕОНА   */
+/* =============================================== */
+
+.main-menu { 
+    max-width: 800px; 
+    margin: 5vh auto; 
+    text-align: center; 
+    padding: 1rem; /* Добавлен паддинг для мобильных */
+}
+
+.menu-section { 
+    margin-top: 2rem; 
+    border-top: 1px solid #ddd; 
+    padding-top: 2rem; 
+}
+
+.accordion-title {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    position: relative; /* Нужно для позиционирования псевдо-элемента */
+    user-select: none; /* Запрещаем выделение текста при клике */
+    transition: margin-bottom 0.3s ease-in-out;
+}
+
+/* Добавляем иконку "+" справа */
+.accordion-title::after {
+    content: '+';
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    font-weight: 300;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Стили для активного (открытого) заголовка */
+.accordion-title.active {
+    margin-bottom: 0.5rem;
+}
+
+/* Меняем "+" на "–" и поворачиваем для анимации */
+.accordion-title.active::after {
+    content: '−'; /* Используем правильный знак минуса */
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.accordion-content {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* Скрываем контент, который выходит за пределы max-height */
+    max-height: 0; /* В закрытом состоянии высота равна 0 */
+    transition: max-height 0.4s ease-in-out; /* Анимация высоты */
+}
+
+/* Когда заголовок активен, показываем следующий за ним контент */
+.accordion-title.active + .accordion-content {
+    /* Устанавливаем достаточно большую высоту, чтобы вместить все пункты */
+    max-height: 500px; 
+}
+
+.accordion-content li a {
+    display: block;
+    padding: 0.8rem;
+    background-color: var(--white);
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: background-color 0.2s;
+    border: 1px solid var(--border-color);
+}
+
+.accordion-content li a:hover { 
+    background-color: var(--border-color); 
+    border-color: var(--accent-color);
+}
