@@ -52,6 +52,7 @@ body {
     background-color: var(--accent-color);
     color: var(--text-light);
     transition: background-color 0.2s;
+     box-sizing: border-box; /* <--- ДОБАВЛЕНА ЭТА СТРОКА */
 }
 .action-button:hover { background-color: var(--accent-hover); }
 
