@@ -500,7 +500,32 @@ body {
     transform: translate(-50%, -50%) scale(0.8); /* Уменьшаем при скрытии */
 }
 
-/* Если видео активно, убираем затемнение постера */
+
+/* =============================================== */
+/* СТИЛИ ДЛЯ КНОПКИ "ВЕРНУТЬСЯ В ГЛАВНОЕ МЕНЮ"      */
+/* =============================================== */
+
+.back-to-menu-link {
+    display: inline-block; /* Чтобы применились отступы и рамка */
+    padding: 8px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.6); /* Полупрозрачная белая рамка */
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый текст */
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-to-menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Легкая подсветка при наведении */
+    border-color: white; /* Рамка становится непрозрачной */
+    color: white; /* Текст становится непрозрачным */
+}
+
+/* Убираем лишний отступ у параграфа, в котором лежит ссылка */
+.main-header .header-text p {
+    margin-bottom: 0;
+}/* Если видео активно, убираем затемнение постера */
 .video-container.is-playing video[poster] {
     filter: brightness(1);
 }
