@@ -427,12 +427,20 @@ body {
     position: relative;
     cursor: pointer;
     display: inline-block; /* Чтобы контейнер был по размеру видео */
+    overflow: hidden; /* Скрывает что-либо, что может вылезти за рамки, например, тень */
+    background-color: #000; /* Черный фон для видео без постера */
 }
 
 /* Стили для постера (превью) */
 .video-container video[poster] {
     width: 100%;
     display: block;
+    filter: brightness(0.7); /* Делаем постер немного темнее, чтобы кнопка выделялась */
+    transition: filter 0.3s ease;
+}
+
+.video-container:hover video[poster] {
+    filter: brightness(0.8); /* Чуть светлее при наведении */
 }
 
 .play-button {
@@ -440,30 +448,59 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    border: none;
-    padding: 0;
+    /* Размеры кнопки - сделаем ее более выразительной */
+    width: auto; /* Ширина по контенту */
+    min-width: 160px; /* Минимальная ширина */
+    height: 60px; /* Высота */
+    
+    background-color: rgba(220, 20, 60, 0.9); /* Темно-красный полупрозрачный фон */
+    border-radius: 12px; /* Чуть менее круглые углы */
+    border: 3px solid white; /* Белая рамка, чтобы выделялась */
+    padding: 0 25px; /* Внутренние отступы */
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease-in-out; /* Плавный переход для всех свойств */
+    
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px; /* Расстояние между иконкой и текстом */
+    
+    font-size: 1.2rem; /* Размер текста */
+    font-weight: bold;
+    color: white; /* Цвет текста */
+    letter-spacing: 1px; /* Разрядить буквы */
+    text-transform: uppercase; /* Все буквы заглавные */
+    z-index: 10; /* Убедимся, что кнопка поверх всего */
 }
 
 .play-button:hover {
-    background-color: rgba(220, 20, 60, 0.8);
+    background-color: rgba(0, 165, 229, 0.9); /* Цвет при наведении (ваша акцент-цвет) */
+    transform: translate(-50%, -50%) scale(1.05); /* Легкое увеличение */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* Светящаяся тень */
 }
 
-.play-button svg {
-    width: 40%;
-    height: 40%;
-    fill: white;
+/* Стили для SVG-иконки внутри кнопки */
+.play-button .play-icon {
+    width: 30px; /* Размер иконки */
+    height: 30px;
+    fill: white; /* Цвет иконки */
 }
+
+/* Если используете Font Awesome */
+.play-button .play-icon-fa {
+    font-size: 2em; /* Большой размер иконки Font Awesome */
+    color: white;
+}
+
 
 /* Когда видео проигрывается, прячем кнопку */
 .video-container.is-playing .play-button {
-    display: none;
+    opacity: 0; /* Делаем кнопку невидимой */
+    pointer-events: none; /* Запрещаем взаимодействие с кнопкой */
+    transform: translate(-50%, -50%) scale(0.8); /* Уменьшаем при скрытии */
+}
+
+/* Если видео активно, убираем затемнение постера */
+.video-container.is-playing video[poster] {
+    filter: brightness(1);
 }
