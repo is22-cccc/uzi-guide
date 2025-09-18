@@ -43,10 +43,15 @@
             <div class="sub-module">
                 <h3>Шаг 3</h3>
                 <p>При трудностях выведения используйте прием скольжения датчика с передней поверхности шеи к латеральной.</p>
-                <video loop muted autoplay playsinline class="instruction-media">
-                    <source src="../assets/jv/jv4.mp4" type="video/mp4">
-                    Ваш браузер не поддерживает видео.
-                </video>
+                <div class="video-container instruction-media">
+                    <video loop muted playsinline 
+                           poster="../assets/jv/posters/jv4_poster.jpg" 
+                           data-src="../assets/jv/jv4.mp4">
+                    </video>
+                    <button class="play-button" aria-label="Play Video">
+                        <svg width="68" height="68" viewBox="0 0 68 68"><path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path><path d="M 27,35 V 13 l 17,11 z"></path></svg>
+                    </button>
+                </div>
             </div>
 
             <div class="sub-module">
@@ -94,12 +99,18 @@
             <div class="sub-module">
                 <h3>Итоговое видео</h3>
                 <p>Весь процесс измерения от начала до конца.</p>
-                <video loop muted autoplay playsinline class="instruction-media">
-                    <source src="../assets/jv/jv11.mp4" type="video/mp4">
-                    Ваш браузер не поддерживает видео.
-                </video>
+                <div class="video-container instruction-media">
+                    <video loop muted playsinline 
+                           poster="../assets/jv/posters/jv11_poster.jpg" 
+                           data-src="../assets/jv/jv11.mp4">
+                    </video>
+                    <button class="play-button" aria-label="Play Video">
+                        <svg width="68" height="68" viewBox="0 0 68 68"><path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"></path><path d="M 27,35 V 13 l 17,11 z"></path></svg>
+                    </button>
+                </div>
             </div>
-            </div>
+
+        </div>
 
         <section id="ijv-module" class="module">
             <h2>Калькулятор для практики</h2>
@@ -135,5 +146,6 @@
     </main>
 
     <script src="../js/calculator_logic.js"></script>
+    <script src="../js/interactive_video.js"></script>
 </body>
 </html>
