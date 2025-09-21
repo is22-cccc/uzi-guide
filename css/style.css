@@ -537,3 +537,15 @@ video {
     height: auto;
     display: block; /* Убирает возможный лишний отступ под элементом */
 }
+
+/* Стиль для кнопки "назад" на светлом фоне */
+.back-to-menu-link.dark-text {
+    border-color: rgba(0, 0, 0, 0.4); /* Полупрозрачная темная рамка */
+    color: rgba(0, 0, 0, 0.6);      /* Полупрозрачный темный текст */
+}
+
+.back-to-menu-link.dark-text:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Легкая подсветка при наведении */
+    border-color: var(--text-dark);          /* Рамка становится непрозрачной */
+    color: var(--text-dark);                 /* Текст становится непрозрачным */
+}
