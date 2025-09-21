@@ -22,6 +22,14 @@ body {
     color: var(--text-dark);
 }
 
+/* Гарантирует правильные пропорции и адаптивность для всех медиа-файлов */
+img,
+video {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Убирает возможный лишний отступ под элементом */
+}
+
 /* --- Стили для экранов выбора --- */
 .screen { display: none; }
 .screen.active { display: block; }
@@ -52,7 +60,7 @@ body {
     background-color: var(--accent-color);
     color: var(--text-light);
     transition: background-color 0.2s;
-     box-sizing: border-box; /* <--- ДОБАВЛЕНА ЭТА СТРОКА */
+    box-sizing: border-box;
 }
 .action-button:hover { background-color: var(--accent-hover); }
 
@@ -125,7 +133,7 @@ body {
 .sidebar {
     flex: 0 0 250px;
     background-color: var(--white);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     position: sticky;
@@ -174,37 +182,16 @@ body {
     color: var(--primary-color);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-/* --- ИСПРАВЛЕННАЯ СТРУКТУРА МАКЕТА --- */
-.module-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: flex-start;
-    margin-top: 1.5rem;
-}
-.instructions-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.instructions-column img {
-    max-width: 100%;
-    border-radius: 8px;
-}
-.calculator-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
 .calculator {
     padding: 1rem;
     background: #fdfdfd;
     border: 1px solid var(--border-color);
     border-radius: 5px;
 }
-.calculator label { display: block; margin-top: 0.7rem; font-weight: 500; }
+.calculator label { display: block; margin-top: 0.8rem; font-weight: 500; }
 .calculator input, .calculator select {
     width: 100%;
     padding: 8px;
@@ -226,7 +213,12 @@ body {
     margin-top: 1.5rem;
 }
 
-.result { padding: 1rem; background-color: var(--bg-light); border-radius: 5px; }
+.result { 
+    margin-top: 1rem;
+    padding: 1rem; 
+    background-color: var(--bg-light); 
+    border-radius: 5px; 
+}
 .interpretation-box {
     margin-top: 1rem; padding: 1rem; border-radius: 5px;
     font-weight: bold; font-size: 1.1rem; text-align: left;
@@ -236,26 +228,15 @@ body {
 .interpretation-box.non-responsive { background-color: var(--warning-bg); color: var(--warning-text); }
 .interpretation-box.neutral { background-color: #eef2f5; color: #546e7a; }
 
-.sub-module { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); }
+.sub-module { 
+    margin-top: 2rem; 
+    padding-top: 2rem; 
+    border-top: 2px solid var(--border-color); 
+}
 .sub-module:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
-.sub-module h3 { margin-top: 0; color: var(--accent-hover); grid-column: 1 / -1; }
+.sub-module h3 { margin-top: 0; color: var(--accent-hover); }
 
-/* --- ИСПРАВЛЕННЫЙ БЛОК: МАКЕТ ДЛЯ РЕЖИМА "БЕЗ ВИЗУАЛИЗАЦИИ" --- */
-.module.no-vis .module-content {
-    grid-template-columns: 1fr; /* Делаем одну колонку */
-}
 
-.module.no-vis .instructions-column {
-    display: none; /* Полностью скрываем левую колонку с инструкциями */
-}
-
-.module.no-vis .calculator-column {
-    /* Для правой колонки, которая осталась, задаем максимальную ширину и центрируем */
-    max-width: 450px;
-    margin: 0 auto;
-    width: 100%;
-}
-.placeholder-text, .module.placeholder { padding: 2rem; text-align: center; color: #777; }
 .final-actions { margin-top: 2rem; padding-top: 2rem; border-top: 3px solid var(--accent-color); }
 .hidden { display: none !important; }
 .previous-value {
@@ -318,9 +299,6 @@ body {
     .module {
         padding: 1.5rem;
     }
-    .module-content {
-        grid-template-columns: 1fr; 
-    }
     .sub-module .step-content {
         grid-template-columns: 1fr;
     }
@@ -334,7 +312,6 @@ body {
 }
 
 
-
 /* =============================================== */
 /* СТИЛИ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ И МЕНЮ-АККОРДЕОНА   */
 /* =============================================== */
@@ -343,7 +320,7 @@ body {
     max-width: 800px; 
     margin: 5vh auto; 
     text-align: center; 
-    padding: 1rem; /* Добавлен паддинг для мобильных */
+    padding: 1rem;
 }
 
 .menu-section { 
@@ -360,12 +337,11 @@ body {
     cursor: pointer;
     font-size: 1.2rem;
     margin-bottom: 1rem;
-    position: relative; /* Нужно для позиционирования псевдо-элемента */
-    user-select: none; /* Запрещаем выделение текста при клике */
+    position: relative;
+    user-select: none;
     transition: margin-bottom 0.3s ease-in-out;
 }
 
-/* Добавляем иконку "+" справа */
 .accordion-title::after {
     content: '+';
     position: absolute;
@@ -377,14 +353,12 @@ body {
     transition: transform 0.3s ease-in-out;
 }
 
-/* Стили для активного (открытого) заголовка */
 .accordion-title.active {
     margin-bottom: 0.5rem;
 }
 
-/* Меняем "+" на "–" и поворачиваем для анимации */
 .accordion-title.active::after {
-    content: '−'; /* Используем правильный знак минуса */
+    content: '−';
     transform: translateY(-50%) rotate(180deg);
 }
 
@@ -392,14 +366,12 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow: hidden; /* Скрываем контент, который выходит за пределы max-height */
-    max-height: 0; /* В закрытом состоянии высота равна 0 */
-    transition: max-height 0.4s ease-in-out; /* Анимация высоты */
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease-in-out;
 }
 
-/* Когда заголовок активен, показываем следующий за ним контент */
 .accordion-title.active + .accordion-content {
-    /* Устанавливаем достаточно большую высоту, чтобы вместить все пункты */
     max-height: 500px; 
 }
 
@@ -426,21 +398,20 @@ body {
 .video-container {
     position: relative;
     cursor: pointer;
-    display: inline-block; /* Чтобы контейнер был по размеру видео */
-    overflow: hidden; /* Скрывает что-либо, что может вылезти за рамки, например, тень */
-    background-color: #000; /* Черный фон для видео без постера */
+    display: inline-block;
+    overflow: hidden;
+    background-color: #000;
 }
 
-/* Стили для постера (превью) */
 .video-container video[poster] {
     width: 100%;
     display: block;
-    filter: brightness(0.7); /* Делаем постер немного темнее, чтобы кнопка выделялась */
+    filter: brightness(0.7);
     transition: filter 0.3s ease;
 }
 
 .video-container:hover video[poster] {
-    filter: brightness(0.8); /* Чуть светлее при наведении */
+    filter: brightness(0.8);
 }
 
 .play-button {
@@ -448,104 +419,96 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* Размеры кнопки - сделаем ее более выразительной */
-    width: auto; /* Ширина по контенту */
-    min-width: 160px; /* Минимальная ширина */
-    height: 60px; /* Высота */
-    
-    background-color: rgba(220, 20, 60, 0.9); /* Темно-красный полупрозрачный фон */
-    border-radius: 12px; /* Чуть менее круглые углы */
-    border: 3px solid white; /* Белая рамка, чтобы выделялась */
-    padding: 0 25px; /* Внутренние отступы */
+    width: auto;
+    min-width: 160px;
+    height: 60px;
+    background-color: rgba(220, 20, 60, 0.9);
+    border-radius: 12px;
+    border: 3px solid white;
+    padding: 0 25px;
     cursor: pointer;
-    transition: all 0.2s ease-in-out; /* Плавный переход для всех свойств */
-    
+    transition: all 0.2s ease-in-out;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* Расстояние между иконкой и текстом */
-    
-    font-size: 1.2rem; /* Размер текста */
+    gap: 10px;
+    font-size: 1.2rem;
     font-weight: bold;
-    color: white; /* Цвет текста */
-    letter-spacing: 1px; /* Разрядить буквы */
-    text-transform: uppercase; /* Все буквы заглавные */
-    z-index: 10; /* Убедимся, что кнопка поверх всего */
+    color: white;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 10;
 }
 
 .play-button:hover {
-    background-color: rgba(0, 165, 229, 0.9); /* Цвет при наведении (ваша акцент-цвет) */
-    transform: translate(-50%, -50%) scale(1.05); /* Легкое увеличение */
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* Светящаяся тень */
+    background-color: rgba(0, 165, 229, 0.9);
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
 }
 
-/* Стили для SVG-иконки внутри кнопки */
 .play-button .play-icon {
-    width: 30px; /* Размер иконки */
+    width: 30px;
     height: 30px;
-    fill: white; /* Цвет иконки */
+    fill: white;
 }
 
-/* Если используете Font Awesome */
-.play-button .play-icon-fa {
-    font-size: 2em; /* Большой размер иконки Font Awesome */
-    color: white;
-}
-
-
-/* Когда видео проигрывается, прячем кнопку */
 .video-container.is-playing .play-button {
-    opacity: 0; /* Делаем кнопку невидимой */
-    pointer-events: none; /* Запрещаем взаимодействие с кнопкой */
-    transform: translate(-50%, -50%) scale(0.8); /* Уменьшаем при скрытии */
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.8);
 }
 
+.video-container.is-playing video[poster] {
+    filter: brightness(1);
+}
 
 /* =============================================== */
 /* СТИЛИ ДЛЯ КНОПКИ "ВЕРНУТЬСЯ В ГЛАВНОЕ МЕНЮ"      */
 /* =============================================== */
 
 .back-to-menu-link {
-    display: inline-block; /* Чтобы применились отступы и рамка */
+    display: inline-block;
     padding: 8px 16px;
-    border: 2px solid rgba(255, 255, 255, 0.6); /* Полупрозрачная белая рамка */
+    border: 2px solid rgba(255, 255, 255, 0.6);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый текст */
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
 }
 
 .back-to-menu-link:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* Легкая подсветка при наведении */
-    border-color: white; /* Рамка становится непрозрачной */
-    color: white; /* Текст становится непрозрачным */
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    color: white;
 }
 
 /* Убираем лишний отступ у параграфа, в котором лежит ссылка */
 .main-header .header-text p {
     margin-bottom: 0;
-}/* Если видео активно, убираем затемнение постера */
-.video-container.is-playing video[poster] {
-    filter: brightness(1);
-}
-
-/* Гарантирует правильные пропорции и адаптивность для всех медиа-файлов */
-img,
-video {
-    max-width: 100%;
-    height: auto;
-    display: block; /* Убирает возможный лишний отступ под элементом */
 }
 
 /* Стиль для кнопки "назад" на светлом фоне */
 .back-to-menu-link.dark-text {
-    border-color: rgba(0, 0, 0, 0.4); /* Полупрозрачная темная рамка */
-    color: rgba(0, 0, 0, 0.6);      /* Полупрозрачный темный текст */
+    border-color: rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .back-to-menu-link.dark-text:hover {
-    background-color: rgba(0, 0, 0, 0.05); /* Легкая подсветка при наведении */
-    border-color: var(--text-dark);          /* Рамка становится непрозрачной */
-    color: var(--text-dark);                 /* Текст становится непрозрачным */
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--text-dark);
+    color: var(--text-dark);
+}
+
+/* =============================================== */
+/* ФИНАЛЬНАЯ КОРРЕКЦИЯ МАКЕТА ДЛЯ КАЛЬКУЛЯТОРА     */
+/* =============================================== */
+
+.module .step-content {
+    display: block;
+}
+
+.module .visualization {
+    max-width: 550px;
+    margin: 1.5rem auto 0;
 }
